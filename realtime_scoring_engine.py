@@ -23,6 +23,9 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 MODELS_DIR = os.path.join(BASE_DIR, "models")
 FEED_FILE  = os.path.join(BASE_DIR, "dashboard", "live_feed.jsonl")
 STATS_FILE = os.path.join(BASE_DIR, "dashboard", "live_stats.json")
+WEB_FEED_FILE  = os.path.join(BASE_DIR, "web", "data", "live_feed.jsonl")
+WEB_STATS_FILE = os.path.join(BASE_DIR, "web", "data", "live_stats.json")
+os.makedirs(os.path.join(BASE_DIR, "web", "data"), exist_ok=True)
 
 # Load Azure config
 with open(os.path.join(BASE_DIR, "azure_config.json")) as f:
@@ -264,6 +267,8 @@ def update_stats(verdict: str):
     stats["last_updated"] = datetime.now(timezone.utc).isoformat()
     with open(STATS_FILE, "w") as f:
         json.dump(stats, f)
+    with open(WEB_STATS_FILE, "w") as f:
+        json.dump(stats, f)
 
 # ══════════════════════════════════════════════════════════════
 # EVENT HUB CONSUMER (with local fallback)
@@ -288,14 +293,26 @@ def try_eventhub_consumer():
 import requests as req_lib
 
 SYNTHETIC_COINS = [
-    {"id":"bitcoin",  "symbol":"BTC","name":"Bitcoin",  "current_price":65000.0,"market_cap":1.3e12,"price_change_percentage_24h":0.5},
-    {"id":"ethereum", "symbol":"ETH","name":"Ethereum", "current_price":3400.0, "market_cap":4.0e11,"price_change_percentage_24h":1.2},
-    {"id":"solana",   "symbol":"SOL","name":"Solana",   "current_price":145.0,  "market_cap":6.0e10,"price_change_percentage_24h":-0.8},
-    {"id":"xrp",      "symbol":"XRP","name":"XRP",      "current_price":0.52,   "market_cap":2.8e10,"price_change_percentage_24h":0.3},
-    {"id":"bnb",      "symbol":"BNB","name":"BNB",      "current_price":580.0,  "market_cap":8.0e10,"price_change_percentage_24h":-0.2},
-    {"id":"cardano",  "symbol":"ADA","name":"Cardano",  "current_price":0.45,   "market_cap":1.6e10,"price_change_percentage_24h":0.6},
-    {"id":"dogecoin", "symbol":"DOGE","name":"Dogecoin","current_price":0.12,   "market_cap":1.7e10,"price_change_percentage_24h":-1.1},
-    {"id":"polkadot", "symbol":"DOT","name":"Polkadot", "current_price":7.2,    "market_cap":9.0e9, "price_change_percentage_24h":0.8},
+    {"id":"bitcoin",       "symbol":"BTC",  "name":"Bitcoin",       "current_price":65000.0,"market_cap":1.3e12, "price_change_percentage_24h":0.5},
+    {"id":"ethereum",      "symbol":"ETH",  "name":"Ethereum",      "current_price":3400.0, "market_cap":4.0e11, "price_change_percentage_24h":1.2},
+    {"id":"solana",        "symbol":"SOL",  "name":"Solana",        "current_price":145.0,  "market_cap":6.0e10, "price_change_percentage_24h":-0.8},
+    {"id":"binancecoin",   "symbol":"BNB",  "name":"BNB",           "current_price":580.0,  "market_cap":8.0e10, "price_change_percentage_24h":-0.2},
+    {"id":"ripple",        "symbol":"XRP",  "name":"XRP",           "current_price":0.52,   "market_cap":2.8e10, "price_change_percentage_24h":0.3},
+    {"id":"cardano",       "symbol":"ADA",  "name":"Cardano",       "current_price":0.45,   "market_cap":1.6e10, "price_change_percentage_24h":0.6},
+    {"id":"dogecoin",      "symbol":"DOGE", "name":"Dogecoin",      "current_price":0.12,   "market_cap":1.7e10, "price_change_percentage_24h":-1.1},
+    {"id":"polkadot",      "symbol":"DOT",  "name":"Polkadot",      "current_price":7.2,    "market_cap":9.0e9,  "price_change_percentage_24h":0.8},
+    {"id":"avalanche-2",   "symbol":"AVAX", "name":"Avalanche",     "current_price":26.5,   "market_cap":1.0e10, "price_change_percentage_24h":2.1},
+    {"id":"chainlink",     "symbol":"LINK", "name":"Chainlink",     "current_price":11.8,   "market_cap":7.0e9,  "price_change_percentage_24h":-0.4},
+    {"id":"matic-network", "symbol":"MATIC","name":"Polygon",       "current_price":0.42,   "market_cap":4.0e9,  "price_change_percentage_24h":-1.5},
+    {"id":"shiba-inu",     "symbol":"SHIB", "name":"Shiba Inu",     "current_price":0.000014,"market_cap":8.0e9, "price_change_percentage_24h":3.2},
+    {"id":"uniswap",       "symbol":"UNI",  "name":"Uniswap",       "current_price":6.8,    "market_cap":4.1e9,  "price_change_percentage_24h":0.9},
+    {"id":"near",          "symbol":"NEAR", "name":"NEAR Protocol", "current_price":4.5,    "market_cap":5.0e9,  "price_change_percentage_24h":1.7},
+    {"id":"litecoin",      "symbol":"LTC",  "name":"Litecoin",      "current_price":64.0,   "market_cap":4.8e9,  "price_change_percentage_24h":-0.6},
+    {"id":"cosmos",        "symbol":"ATOM", "name":"Cosmos",        "current_price":4.6,    "market_cap":1.8e9,  "price_change_percentage_24h":-1.0},
+    {"id":"internet-computer","symbol":"ICP","name":"Internet Computer","current_price":7.9,"market_cap":3.7e9, "price_change_percentage_24h":0.4},
+    {"id":"sui",           "symbol":"SUI",  "name":"Sui",           "current_price":0.88,   "market_cap":2.3e9,  "price_change_percentage_24h":4.5},
+    {"id":"aptos",         "symbol":"APT",  "name":"Aptos",         "current_price":6.7,    "market_cap":3.1e9,  "price_change_percentage_24h":-2.1},
+    {"id":"tron",          "symbol":"TRX",  "name":"TRON",          "current_price":0.15,   "market_cap":1.3e10, "price_change_percentage_24h":0.1}
 ]
 
 live_prices = {c["symbol"]: c["current_price"] for c in SYNTHETIC_COINS}
@@ -379,6 +396,8 @@ def write_to_feed(scored: dict):
         lines = lines[-500:]  # keep last 500 events
         with open(FEED_FILE, "w", encoding="utf-8") as f:
             f.writelines(lines)
+        with open(WEB_FEED_FILE, "w", encoding="utf-8") as f:
+            f.writelines(lines)
 
 # ══════════════════════════════════════════════════════════════
 # MAIN LOOP
@@ -386,13 +405,18 @@ def write_to_feed(scored: dict):
 def main():
     print("\n[2] Initializing live feed files...")
     os.makedirs(os.path.dirname(FEED_FILE), exist_ok=True)
+    os.makedirs(os.path.dirname(WEB_FEED_FILE), exist_ok=True)
     # Clear old feed
     with open(FEED_FILE, "w") as f:
         f.write("")
     with open(STATS_FILE, "w") as f:
         json.dump(stats, f)
+    with open(WEB_FEED_FILE, "w") as f:
+        f.write("")
+    with open(WEB_STATS_FILE, "w") as f:
+        json.dump(stats, f)
     print(f"  Feed file: {FEED_FILE}")
-    print(f"  Stats file: {STATS_FILE}")
+    print(f"  Web feed file: {WEB_FEED_FILE}")
 
     print("\n[3] Attempting Event Hubs connection...")
     consumer = try_eventhub_consumer()

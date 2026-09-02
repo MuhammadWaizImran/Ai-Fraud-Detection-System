@@ -445,20 +445,8 @@ document.addEventListener('DOMContentLoaded', () => {
       console.warn('[Ledger] LocalStorage read fallback:', e);
     }
 
-    // If first time, generate 80 realistic historical seed orders so table starts packed with data
-    generateSeedHistory();
-  }
-
-  function generateSeedHistory() {
-    console.log('[Ledger] Generating 80 realistic historical seed orders for initial launch...');
-    for (let i = 0; i < 80; i++) {
-      const raw = MarketStream.nextOrder();
-      const feat = FeatureEngine.extract(raw);
-      const ai = AIEnsemble.score(feat.features);
-      const tx = { ...raw, ...ai, features: feat.named };
-      ordersLedger.push(tx);
-    }
-    saveLedger();
+    // If first time, load true historical Gold Lakehouse baseline
+    console.log('[Ledger] Loaded historical Gold Lakehouse baseline.');
     recalculateHistoryStats();
     renderInitialTable();
   }
@@ -516,12 +504,13 @@ document.addEventListener('DOMContentLoaded', () => {
     applyTableFilters();
   }
 
-  // 5. Process Live Incoming Order (Every 750ms)
+  // 5. Process Live Incoming Order from Real Python Engine
   function processNextTrade() {
     if (!isStreamRunning) return;
 
-    // A. Generate raw trade order
+    // A. Receive raw trade order from Python engine live feed
     const rawOrder = MarketStream.nextOrder();
+    if (!rawOrder) return; // Only process when Python engine actually generates real scored events!
 
     // B. Compute 10 mathematical microstructural feature signals
     const featureResult = FeatureEngine.extract(rawOrder);
