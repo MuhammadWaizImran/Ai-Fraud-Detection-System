@@ -1,0 +1,224 @@
+# ╔══════════════════════════════════════════════════════════════╗
+# ║   POWER BI - ALL DAX MEASURES                               ║
+# ║   Fraud Detection Platform                                   ║
+# ║   Copy each measure into Power BI: Modeling -> New Measure  ║
+# ╚══════════════════════════════════════════════════════════════╝
+
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# TABLE: pbi_summary_kpis
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Total Transactions = 
+SUM(pbi_summary_kpis[total_predictions])
+
+Total Fraud Cases = 
+SUM(pbi_summary_kpis[fraud_count])
+
+Total Suspicious = 
+SUM(pbi_summary_kpis[suspicious_count])
+
+Total Safe = 
+SUM(pbi_summary_kpis[safe_count])
+
+Fraud Rate % = 
+DIVIDE(
+    SUM(pbi_summary_kpis[fraud_count]),
+    SUM(pbi_summary_kpis[total_predictions]),
+    0
+) * 100
+
+Avg Risk Score = 
+AVERAGE(pbi_summary_kpis[avg_risk_score])
+
+Max Risk Score = 
+MAX(pbi_summary_kpis[max_risk_score])
+
+Fraud Last 1H = 
+SUM(pbi_summary_kpis[fraud_last_1h])
+
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# TABLE: pbi_trader_risk_profiles
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+High Risk Traders = 
+CALCULATE(
+    COUNTROWS(pbi_trader_risk_profiles),
+    pbi_trader_risk_profiles[risk_tier] = "HIGH"
+)
+
+Flagged Traders = 
+CALCULATE(
+    COUNTROWS(pbi_trader_risk_profiles),
+    pbi_trader_risk_profiles[trader_status] = "FLAGGED"
+)
+
+Under Watch = 
+CALCULATE(
+    COUNTROWS(pbi_trader_risk_profiles),
+    pbi_trader_risk_profiles[trader_status] = "WATCH"
+)
+
+Avg Trader Risk = 
+AVERAGE(pbi_trader_risk_profiles[avg_risk_score])
+
+Total Volume Traded = 
+SUM(pbi_trader_risk_profiles[total_volume_traded])
+
+Wash Trade Rate Avg = 
+AVERAGE(pbi_trader_risk_profiles[wash_trade_rate])
+
+Layering Rate Avg = 
+AVERAGE(pbi_trader_risk_profiles[layering_rate])
+
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# TABLE: pbi_fraud_timeseries
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Fraud Trend (Rolling 24H) = 
+CALCULATE(
+    SUM(pbi_fraud_timeseries[fraud_count]),
+    DATESINPERIOD(
+        pbi_fraud_timeseries[minute_bucket],
+        MAX(pbi_fraud_timeseries[minute_bucket]),
+        -24, HOUR
+    )
+)
+
+Peak Fraud Hour = 
+CALCULATE(
+    SELECTEDVALUE(pbi_fraud_timeseries[hour_of_day]),
+    TOPN(1, pbi_fraud_timeseries, pbi_fraud_timeseries[fraud_count], DESC)
+)
+
+Volume Spike Alert = 
+IF(
+    MAX(pbi_fraud_timeseries[avg_risk_score]) > 0.7,
+    "CRITICAL ALERT",
+    IF(MAX(pbi_fraud_timeseries[avg_risk_score]) > 0.5, "WARNING", "NORMAL")
+)
+
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# TABLE: pbi_fraud_by_symbol
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Top Fraud Symbol = 
+CALCULATE(
+    SELECTEDVALUE(pbi_fraud_by_symbol[symbol]),
+    TOPN(1, pbi_fraud_by_symbol, pbi_fraud_by_symbol[fraud_count], DESC)
+)
+
+Symbol Risk Avg = 
+AVERAGE(pbi_fraud_by_symbol[avg_risk_score])
+
+Total Market Volume = 
+SUM(pbi_fraud_by_symbol[total_volume])
+
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# TABLE: pbi_fraud_by_pattern
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Top Fraud Pattern = 
+CALCULATE(
+    SELECTEDVALUE(pbi_fraud_by_pattern[fraud_type_predicted]),
+    TOPN(1, pbi_fraud_by_pattern, pbi_fraud_by_pattern[fraud_count], DESC)
+)
+
+Wash Trade Count = 
+CALCULATE(
+    SUM(pbi_fraud_by_pattern[fraud_count]),
+    pbi_fraud_by_pattern[fraud_type_predicted] = "WASH_TRADE"
+)
+
+Layering Count = 
+CALCULATE(
+    SUM(pbi_fraud_by_pattern[fraud_count]),
+    pbi_fraud_by_pattern[fraud_type_predicted] = "LAYERING"
+)
+
+Spoofing Count = 
+CALCULATE(
+    SUM(pbi_fraud_by_pattern[fraud_count]),
+    pbi_fraud_by_pattern[fraud_type_predicted] = "SPOOFING"
+)
+
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# TABLE: pbi_hourly_trends
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Fraud This Hour = 
+CALCULATE(
+    SUM(pbi_hourly_trends[fraud_count]),
+    pbi_hourly_trends[hour_bucket] = MAX(pbi_hourly_trends[hour_bucket])
+)
+
+Active Traders Now = 
+CALCULATE(
+    MAX(pbi_hourly_trends[active_traders]),
+    pbi_hourly_trends[hour_bucket] = MAX(pbi_hourly_trends[hour_bucket])
+)
+
+Fraud Rate This Hour = 
+CALCULATE(
+    AVERAGE(pbi_hourly_trends[fraud_rate_pct]),
+    pbi_hourly_trends[hour_bucket] = MAX(pbi_hourly_trends[hour_bucket])
+)
+
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# CONDITIONAL FORMATTING RULES (apply to card visuals)
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+# Fraud Rate Card Color:
+Fraud Rate Color = 
+SWITCH(
+    TRUE(),
+    [Fraud Rate %] >= 10, "#FF4D6D",   -- Red: Critical
+    [Fraud Rate %] >= 5,  "#F0A500",   -- Amber: Warning
+    "#2DBA4E"                           -- Green: Normal
+)
+
+# Risk Score Card Color:
+Risk Score Color = 
+SWITCH(
+    TRUE(),
+    [Avg Risk Score] >= 0.7, "#FF4D6D",
+    [Avg Risk Score] >= 0.5, "#F0A500",
+    "#2DBA4E"
+)
+
+# Trader Status Badge:
+Trader Status Badge = 
+SWITCH(
+    SELECTEDVALUE(pbi_trader_risk_profiles[trader_status]),
+    "FLAGGED",  "🔴 FLAGGED",
+    "WATCH",    "🟡 WATCH",
+    "NORMAL",   "🟢 NORMAL",
+    "UNKNOWN"
+)
+
+# Risk Tier Badge:
+Risk Tier Badge = 
+SWITCH(
+    SELECTEDVALUE(pbi_trader_risk_profiles[risk_tier]),
+    "HIGH",    "HIGH RISK",
+    "MEDIUM",  "MEDIUM RISK",
+    "LOW",     "LOW RISK",
+    "UNKNOWN"
+)
+
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# KPI CHANGE INDICATORS (vs previous period)
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Fraud Change vs Prev Hour = 
+VAR CurrentHour = 
+    CALCULATE(SUM(pbi_hourly_trends[fraud_count]),
+              TOPN(1, pbi_hourly_trends, pbi_hourly_trends[hour_bucket], DESC))
+VAR PrevHour = 
+    CALCULATE(SUM(pbi_hourly_trends[fraud_count]),
+              TOPN(1,
+                FILTER(pbi_hourly_trends,
+                  pbi_hourly_trends[hour_bucket] < MAX(pbi_hourly_trends[hour_bucket])),
+                pbi_hourly_trends[hour_bucket], DESC))
+RETURN
+    IF(PrevHour = 0, BLANK(),
+       DIVIDE(CurrentHour - PrevHour, PrevHour) * 100)

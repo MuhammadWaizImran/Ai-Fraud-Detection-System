@@ -1,0 +1,76 @@
+/* ══════════════════════════════════════════════════════════════
+   ANIMATIONS & KEYFRAMES
+   ══════════════════════════════════════════════════════════════ */
+
+@keyframes pulse-dot {
+  0% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+  }
+  70% {
+    transform: scale(1.15);
+    box-shadow: 0 0 0 8px rgba(16, 185, 129, 0);
+  }
+  100% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0);
+  }
+}
+
+@keyframes pulse-danger {
+  0%, 100% {
+    box-shadow: 0 0 10px rgba(239, 68, 68, 0.4);
+    border-color: rgba(239, 68, 68, 0.6);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(239, 68, 68, 0.9);
+    border-color: #ef4444;
+  }
+}
+
+@keyframes alarm-pulse {
+  0%, 100% {
+    box-shadow: 0 0 25px rgba(239, 68, 68, 0.3), inset 0 0 15px rgba(239, 68, 68, 0.2);
+    border-color: rgba(239, 68, 68, 0.8);
+  }
+  50% {
+    box-shadow: 0 0 45px rgba(239, 68, 68, 0.7), inset 0 0 30px rgba(239, 68, 68, 0.4);
+    border-color: #ff4d4d;
+  }
+}
+
+@keyframes ticker-scroll {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes row-highlight {
+  0% {
+    background: rgba(0, 243, 255, 0.25);
+  }
+  100% {
+    background: transparent;
+  }
+}
+
+@keyframes float-badge {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
+@keyframes scan-radar {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}

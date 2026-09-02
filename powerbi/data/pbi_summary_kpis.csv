@@ -1,0 +1,2 @@
+computed_at,total_predictions,fraud_count,suspicious_count,safe_count,fraud_rate_pct,avg_risk_score,max_risk_score,fraud_last_1h
+2026-08-30 23:29:41,58920,1420,4180,53320,2.41,0.1412,0.9847,34

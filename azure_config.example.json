@@ -1,0 +1,12 @@
+{
+  "resource_group": "rg-finra-fraud-detection",
+  "location": "eastus2",
+  "storage_account": "stfinrafraudlakehouse",
+  "storage_key": "YOUR_STORAGE_KEY_HERE",
+  "event_hub_namespace": "evh-finra-market-stream",
+  "event_hub_name": "market-order-events",
+  "event_hub_connection_string": "Endpoint=sb://YOUR_EVENTHUB.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=YOUR_KEY_HERE",
+  "databricks_workspace_url": "https://adb-YOUR_WORKSPACE.azuredatabricks.net",
+  "databricks_token": "dapi_YOUR_TOKEN_HERE",
+  "databricks_cluster_id": "YOUR_CLUSTER_ID_HERE"
+}

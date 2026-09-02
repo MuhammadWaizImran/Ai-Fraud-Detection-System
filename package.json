@@ -1,0 +1,12 @@
+{
+  "name": "finra-ai-fraud-detection-web",
+  "version": "1.0.0",
+  "description": "Real-Time 3D Animated AI Fraud Detection Platform with Interactive Copilot",
+  "main": "index.html",
+  "scripts": {
+    "start": "npx serve web"
+  },
+  "keywords": ["finra", "ai", "fraud-detection", "threejs", "machine-learning"],
+  "author": "Antigravity Pair Programmer",
+  "license": "MIT"
+}

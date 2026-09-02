@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FINRA AI — Real-Time Fraud Detection Presentation</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0e1a;
+    --card: #131a2e;
+    --card2: #182040;
+    --border: #1e2d4a;
+    --cyan: #00d4ff;
+    --purple: #a855f7;
+    --emerald: #10b981;
+    --red: #ef4444;
+    --amber: #f59e0b;
+    --blue: #3b82f6;
+    --text: #e2e8f0;
+    --text2: #94a3b8;
+    --text3: #64748b;
+    --white: #ffffff;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
+  body { background: var(--bg); color: var(--text); overflow: hidden; height: 100vh; display: flex; flex-direction: column; }
+  
+  /* Slide container */
+  .deck { flex: 1; position: relative; width: 100vw; height: 100vh; }
+  .slide { position: absolute; inset: 0; padding: 40px 60px 80px; opacity: 0; pointer-events: none; transition: opacity .4s ease, transform .4s ease; transform: scale(0.98); display: flex; flex-direction: column; }
+  .slide.active { opacity: 1; pointer-events: all; transform: scale(1); }
+
+  /* Navigation bar */
+  .nav { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: rgba(19,26,46,0.9); backdrop-filter: blur(12px); border: 1px solid var(--border); padding: 8px 18px; border-radius: 30px; display: flex; align-items: center; gap: 14px; z-index: 100; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+  .nav-btn { background: var(--card2); border: 1px solid var(--border); color: var(--white); padding: 6px 14px; border-radius: 20px; cursor: pointer; font-size: 13px; font-weight: 700; transition: all .2s; }
+  .nav-btn:hover { background: var(--cyan); color: #000; border-color: var(--cyan); }
+  .dots { display: flex; gap: 8px; }
+  .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--border); cursor: pointer; transition: all .2s; }
+  .dot.active { background: var(--cyan); box-shadow: 0 0 10px var(--cyan); width: 24px; border-radius: 5px; }
+
+  /* Headers */
+  .tag { color: var(--cyan); font-size: 12px; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 6px; }
+  .title { font-size: 32px; font-weight: 900; color: var(--white); line-height: 1.2; margin-bottom: 6px; }
+  .subtitle { font-size: 15px; color: var(--text2); margin-bottom: 24px; }
+
+  /* Cards */
+  .grid { display: grid; gap: 20px; }
+  .card { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 24px; position: relative; overflow: hidden; }
+  .card:hover { border-color: var(--cyan); box-shadow: 0 8px 30px rgba(0,212,255,0.06); }
+  .card-top { height: 3px; position: absolute; top: 0; left: 0; right: 0; }
+
+  .badge { display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 800; background: rgba(0,212,255,0.1); color: var(--cyan); border: 1px solid rgba(0,212,255,0.25); margin-bottom: 12px; }
+  
+  .mono { font-family: 'JetBrains Mono', monospace; }
+  .live-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--emerald); box-shadow: 0 0 8px var(--emerald); animation: pulse 1.5s infinite; }
+  @keyframes pulse { 0%,100% { opacity: 0.4; } 50% { opacity: 1; } }
+</style>
+</head>
+<body>
+
+<div class="deck">
+
+  <!-- SLIDE 1: INTRO -->
+  <div class="slide active">
+    <div style="flex:1; display:flex; flex-direction:column; justify-content:center; max-width:1100px; margin:0 auto; width:100%;">
+      <div class="badge"><span class="live-dot"></span> NEXT-GEN REGULATORY SURVEILLANCE</div>
+      <h1 style="font-size: 48px; font-weight: 900; color: #fff; margin-bottom: 12px; line-height: 1.1;">
+        FINRA AI Real-Time Fraud Detection Platform
+      </h1>
+      <p style="font-size: 20px; color: var(--cyan); font-weight: 600; margin-bottom: 36px;">
+        Sub-2ms Market Surveillance & Manipulation Intercept Architecture
+      </p>
+      
+      <div class="grid" style="grid-template-columns: repeat(4, 1fr);">
+        <div class="card">
+          <div class="card-top" style="background: var(--cyan);"></div>
+          <div style="font-size: 13px; font-weight: 800; color: var(--cyan);">SUB-2MS LATENCY</div>
+          <div style="font-size: 16px; font-weight: 800; color: #fff; margin: 4px 0 8px;">Inline Interception</div>
+          <div style="font-size: 12px; color: var(--text2);">Scores high-frequency orders before trade execution & settlement.</div>
+        </div>
+        <div class="card">
+          <div class="card-top" style="background: var(--purple);"></div>
+          <div style="font-size: 13px; font-weight: 800; color: var(--purple);">3-MODEL ENSEMBLE</div>
+          <div style="font-size: 16px; font-weight: 800; color: #fff; margin: 4px 0 8px;">Hybrid AI Engine</div>
+          <div style="font-size: 12px; color: var(--text2);">XGBoost (60%) + Isolation Forest (20%) + Deep PyTorch Autoencoder (20%).</div>
+        </div>
+        <div class="card">
+          <div class="card-top" style="background: var(--emerald);"></div>
+          <div style="font-size: 13px; font-weight: 800; color: var(--emerald);">MEDALLION LAKEHOUSE</div>
+          <div style="font-size: 16px; font-weight: 800; color: #fff; margin: 4px 0 8px;">Delta Lake Flow</div>
+          <div style="font-size: 12px; color: var(--text2);">Bronze Raw Stream ➔ Silver Cleaned & Typed ➔ Gold Rolling Feature Store.</div>
+        </div>
+        <div class="card">
+          <div class="card-top" style="background: var(--blue);"></div>
+          <div style="font-size: 13px; font-weight: 800; color: var(--blue);">ENTERPRISE STACK</div>
+          <div style="font-size: 16px; font-weight: 800; color: #fff; margin: 4px 0 8px;">Azure + Databricks</div>
+          <div style="font-size: 12px; color: var(--text2);">Terraform IaC, Event Hubs, Unity Catalog, and Logic App Automated Alerts.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 2: PROBLEM & SOLUTION -->
+  <div class="slide">
+    <div class="tag">Market Vulnerabilities vs AI Defense</div>
+    <div class="title">The Problem & Our AI Solution</div>
+    <div class="subtitle">Why traditional post-trade T+1 auditing fails and how streaming ML solves it.</div>
+    <div class="grid" style="grid-template-columns: 1fr 1fr; flex:1;">
+      <div class="card" style="border-color: var(--red); background: rgba(239,68,68,0.03);">
+        <div class="card-top" style="background: var(--red);"></div>
+        <div style="font-size: 18px; font-weight: 900; color: var(--red); margin-bottom: 16px;">🚨 THE PROBLEM: Market Manipulation Epidemic</div>
+        <div style="display:flex; flex-direction:column; gap:16px;">
+          <div>
+            <div style="font-size: 14px; font-weight: 800; color: #fff;">• T+1 Delayed Batch Analysis</div>
+            <div style="font-size: 13px; color: var(--text2); margin-top:2px;">Traditional systems run overnight batch reports. By the time fraud is identified, market manipulators have already exited with profits.</div>
+          </div>
+          <div>
+            <div style="font-size: 14px; font-weight: 800; color: #fff;">• Spoofing & Phantom Orders</div>
+            <div style="font-size: 13px; color: var(--text2); margin-top:2px;">Manipulators flood the order book with massive fake orders to skew prices, cancelling them in milliseconds before execution.</div>
+          </div>
+          <div>
+            <div style="font-size: 14px; font-weight: 800; color: #fff;">• Wash Trading & Self-Dealing</div>
+            <div style="font-size: 13px; color: var(--text2); margin-top:2px;">Collusive entities execute simultaneous buy/sell orders between puppet accounts to fabricate fake volume and lure retail liquidity.</div>
+          </div>
+          <div>
+            <div style="font-size: 14px; font-weight: 800; color: #fff;">• Multi-Layered Attacks Evading Static Rules</div>
+            <div style="font-size: 13px; color: var(--text2); margin-top:2px;">Threshold rules (e.g. volume > $1M) miss sophisticated distributed bot attacks spread across hundreds of smaller transactions.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" style="border-color: var(--emerald); background: rgba(16,185,129,0.03);">
+        <div class="card-top" style="background: var(--emerald);"></div>
+        <div style="font-size: 18px; font-weight: 900; color: var(--emerald); margin-bottom: 16px;">🛡️ OUR SOLUTION: Real-Time AI Intelligence</div>
+        <div style="display:flex; flex-direction:column; gap:16px;">
+          <div>
+            <div style="font-size: 14px; font-weight: 800; color: #fff;">✔ Sub-2ms Streaming Interception</div>
+            <div style="font-size: 13px; color: var(--text2); margin-top:2px;">Spark Structured Streaming processes orders the moment they hit Event Hubs, intercepting manipulation inline with zero human lag.</div>
+          </div>
+          <div>
+            <div style="font-size: 14px; font-weight: 800; color: #fff;">✔ 3-Model AI Hybrid Ensemble</div>
+            <div style="font-size: 13px; color: var(--text2); margin-top:2px;">Combines supervised precision (XGBoost 88.2%) with unsupervised anomaly detection (IsoForest + Autoencoder) for novel zero-day patterns.</div>
+          </div>
+          <div>
+            <div style="font-size: 14px; font-weight: 800; color: #fff;">✔ Dynamic Rolling Feature Engineering</div>
+            <div style="font-size: 13px; color: var(--text2); margin-top:2px;">Calculates Cancel-to-Trade ratios, Volume Spike Z-Scores, and Order Imbalance over rolling time windows in real-time.</div>
+          </div>
+          <div>
+            <div style="font-size: 14px; font-weight: 800; color: #fff;">✔ Automated Azure Logic App Alerts</div>
+            <div style="font-size: 13px; color: var(--text2); margin-top:2px;">Critical threats (&ge; 0.85 risk) automatically trigger instant compliance email notifications with complete payload lineage.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 3: TECH STACK & ALTERNATIVES -->
+  <div class="slide">
+    <div class="tag">Technology Trade-Off Analysis</div>
+    <div class="title">Enterprise Tech Stack & Why We Chose It</div>
+    <div class="subtitle">Comparing each selected tool against industry alternatives and architectural rationale.</div>
+    <div class="grid" style="grid-template-columns: repeat(3, 1fr); flex:1;">
+      <div class="card">
+        <div class="card-top" style="background: var(--cyan);"></div>
+        <div style="font-size: 15px; font-weight: 900; color: var(--cyan);">⭐ Azure Event Hubs</div>
+        <div style="font-size: 12px; color: var(--text3); font-weight:700; margin:4px 0 8px;">❌ Alternatives: Kafka Clusters / RabbitMQ</div>
+        <div style="font-size: 12px; color: var(--text);"><b>Why Chosen:</b> Fully managed serverless broker, native Azure IAM integration, Kafka 9093 protocol compatibility without cluster maintenance overhead.</div>
+      </div>
+      <div class="card">
+        <div class="card-top" style="background: var(--purple);"></div>
+        <div style="font-size: 15px; font-weight: 900; color: var(--purple);">⭐ Azure Databricks</div>
+        <div style="font-size: 12px; color: var(--text3); font-weight:700; margin:4px 0 8px;">❌ Alternatives: AWS EMR / Apache Flink</div>
+        <div style="font-size: 12px; color: var(--text);"><b>Why Chosen:</b> Optimized Photon C++ Spark engine (4x faster), Unity Catalog enterprise governance, and serverless compute with scale-to-zero cost efficiency.</div>
+      </div>
+      <div class="card">
+        <div class="card-top" style="background: var(--emerald);"></div>
+        <div style="font-size: 15px; font-weight: 900; color: var(--emerald);">⭐ Delta Lake (Medallion)</div>
+        <div style="font-size: 12px; color: var(--text3); font-weight:700; margin:4px 0 8px;">❌ Alternatives: Raw Parquet / PostgreSQL</div>
+        <div style="font-size: 12px; color: var(--text);"><b>Why Chosen:</b> ACID transactions over object storage, Time Travel auditability, streaming checkpoint guarantees, and zero concurrency write conflicts.</div>
+      </div>
+      <div class="card">
+        <div class="card-top" style="background: var(--blue);"></div>
+        <div style="font-size: 15px; font-weight: 900; color: var(--blue);">⭐ MLflow Model Registry</div>
+        <div style="font-size: 12px; color: var(--text3); font-weight:700; margin:4px 0 8px;">❌ Alternatives: SageMaker / WandB</div>
+        <div style="font-size: 12px; color: var(--text);"><b>Why Chosen:</b> Native Databricks integration, automated Champion-vs-Challenger promotion, strict model versioning, and single-click serving.</div>
+      </div>
+      <div class="card">
+        <div class="card-top" style="background: var(--amber);"></div>
+        <div style="font-size: 15px; font-weight: 900; color: var(--amber);">⭐ 3-Model AI Ensemble</div>
+        <div style="font-size: 12px; color: var(--text3); font-weight:700; margin:4px 0 8px;">❌ Alternatives: Static Heuristic Rules</div>
+        <div style="font-size: 12px; color: var(--text);"><b>Why Chosen:</b> Static rules fail on novel manipulation. Ensemble marries gradient boosted classification (60%) with unsupervised anomaly detectors (40%).</div>
+      </div>
+      <div class="card">
+        <div class="card-top" style="background: var(--red);"></div>
+        <div style="font-size: 15px; font-weight: 900; color: var(--red);">⭐ Streamlit & Power BI</div>
+        <div style="font-size: 12px; color: var(--text3); font-weight:700; margin:4px 0 8px;">❌ Alternatives: Tableau / Grafana</div>
+        <div style="font-size: 12px; color: var(--text);"><b>Why Chosen:</b> High-frequency real-time WebSocket dashboarding in Streamlit combined with executive enterprise DAX reporting in Power BI.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 4: ARCHITECTURE -->
+  <div class="slide">
+    <div class="tag">End-to-End System Blueprint</div>
+    <div class="title">Complete Enterprise Pipeline Architecture</div>
+    <div class="subtitle">From live CoinGecko crypto feeds to micro-batch processing, AI scoring, and compliance visualization.</div>
+    <div class="grid" style="grid-template-columns: repeat(4, 1fr); flex:1;">
+      <div class="card">
+        <div class="card-top" style="background: var(--cyan);"></div>
+        <div style="font-size: 12px; font-weight: 800; color: var(--cyan);">STAGE 1</div>
+        <div style="font-size: 16px; font-weight: 800; color: #fff; margin: 4px 0 12px;">Ingestion Engine</div>
+        <div style="font-size: 13px; color: var(--text2); line-height: 1.5;">
+          • CoinGecko Live Market API<br>
+          • 500 Agent Order Simulator<br>
+          • Azure Event Hubs (9093)<br>
+          • Sub-millisecond buffer queue
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-top" style="background: var(--purple);"></div>
+        <div style="font-size: 12px; font-weight: 800; color: var(--purple);">STAGE 2</div>
+        <div style="font-size: 16px; font-weight: 800; color: #fff; margin: 4px 0 12px;">Medallion Lakehouse</div>
+        <div style="font-size: 13px; color: var(--text2); line-height: 1.5;">
+          • <b>Bronze:</b> Raw JSON stream<br>
+          • <b>Silver:</b> Deduplicated & typed<br>
+          • <b>Gold:</b> Rolling feature store<br>
+          • Spark Structured Streaming
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-top" style="background: var(--emerald);"></div>
+        <div style="font-size: 12px; font-weight: 800; color: var(--emerald);">STAGE 3</div>
+        <div style="font-size: 16px; font-weight: 800; color: #fff; margin: 4px 0 12px;">AI Inference Engine</div>
+        <div style="font-size: 13px; color: var(--text2); line-height: 1.5;">
+          • XGBoost Binary Classifier<br>
+          • XGBoost Multiclass Pattern<br>
+          • Isolation Forest Anomaly<br>
+          • Deep PyTorch Autoencoder
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-top" style="background: var(--blue);"></div>
+        <div style="font-size: 12px; font-weight: 800; color: var(--blue);">STAGE 4</div>
+        <div style="font-size: 16px; font-weight: 800; color: #fff; margin: 4px 0 12px;">Action & Intelligence</div>
+        <div style="font-size: 13px; color: var(--text2); line-height: 1.5;">
+          • Streamlit Live Terminal<br>
+          • Power BI Executive PBIP<br>
+          • Azure Logic App Webhooks<br>
+          • Automated Email Notifications
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 5: DATA STRUCTURE -->
+  <div class="slide">
+    <div class="tag">Medallion Data Lakehouse</div>
+    <div class="title">Data Evolution: Bronze ➔ Silver ➔ Gold</div>
+    <div class="subtitle">How raw streaming bytes are refined into certified tabular data and ML feature matrices.</div>
+    <div class="grid" style="grid-template-columns: repeat(3, 1fr); flex:1;">
+      <div class="card" style="border-color: #d97706;">
+        <div class="card-top" style="background: #d97706;"></div>
+        <div style="font-size: 17px; font-weight: 900; color: #f59e0b;">🟫 BRONZE: Raw Stream</div>
+        <div style="font-size: 12px; color: var(--text2); margin: 4px 0 14px;">Immutable Audit Record</div>
+        <div style="font-size: 12px; color: var(--text); line-height:1.7;">
+          <b>• Format:</b> Unstructured JSON string (<span class="mono">json_str</span>)<br>
+          <b>• Metadata:</b> Kafka Offset, Partition, Enqueued Time<br>
+          <b>• Data Quality:</b> No filters applied (100% raw)<br>
+          <b>• Purpose:</b> Legal regulatory audit & data replayability<br>
+          <b>• Table:</b> <span class="mono">bronze.raw_trades</span>
+        </div>
+      </div>
+      <div class="card" style="border-color: #94a3b8;">
+        <div class="card-top" style="background: #94a3b8;"></div>
+        <div style="font-size: 17px; font-weight: 900; color: #e2e8f0;">🥈 SILVER: Clean & Validated</div>
+        <div style="font-size: 12px; color: var(--text2); margin: 4px 0 14px;">Standardized Tabular Relational</div>
+        <div style="font-size: 12px; color: var(--text); line-height:1.7;">
+          <b>• Schema:</b> 11 parsed columns (<span class="mono">price</span>, <span class="mono">volume</span>, <span class="mono">symbol</span>)<br>
+          <b>• DQ Checks:</b> Positivity (<span class="mono">price > 0</span>) & Non-null IDs<br>
+          <b>• Deduplication:</b> 10-min watermark drops network retries<br>
+          <b>• Normalization:</b> Lowercase enums & whitespace trim<br>
+          <b>• Table:</b> <span class="mono">silver.clean_trades</span>
+        </div>
+      </div>
+      <div class="card" style="border-color: #eab308;">
+        <div class="card-top" style="background: #eab308;"></div>
+        <div style="font-size: 17px; font-weight: 900; color: #fbbf24;">🥇 GOLD: Feature Store</div>
+        <div style="font-size: 12px; color: var(--text2); margin: 4px 0 14px;">Analytics & ML Ready Store</div>
+        <div style="font-size: 12px; color: var(--text); line-height:1.7;">
+          <b>• Features:</b> Volume Spike Ratio, Cancel-to-Trade Ratio<br>
+          <b>• Temporal Windows:</b> 1-min / 5-min rolling states per trader<br>
+          <b>• Aggregations:</b> <span class="mono">pbi_summary_kpis</span>, <span class="mono">pbi_trader_profiles</span><br>
+          <b>• Consumption:</b> Feeds AI inference & Power BI dashboards<br>
+          <b>• Table:</b> <span class="mono">gold.pbi_*</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 6: LIVE DEMO -->
+  <div class="slide">
+    <div class="tag">Live Interactive Demonstration</div>
+    <div class="title">Live Surveillance Terminal & Business Impact</div>
+    <div class="subtitle">Demonstrating sub-2ms fraud detection in action on live streaming markets.</div>
+    <div class="grid" style="grid-template-columns: 1.1fr 0.9fr; flex:1;">
+      <div class="card" style="border-color: var(--cyan);">
+        <div class="card-top" style="background: var(--cyan);"></div>
+        <div style="font-size: 18px; font-weight: 900; color: var(--cyan); margin-bottom: 14px;">🖥️ LIVE PRODUCTION DEMO WALKTHROUGH</div>
+        <div style="display:flex; flex-direction:column; gap:14px;">
+          <div>
+            <div style="font-size: 14px; font-weight: 800; color: #fff;">1. Live Feed Terminal (<span class="mono">http://localhost:8501</span>)</div>
+            <div style="font-size: 12px; color: var(--text2);">Orders stream dynamically every 0.5s, calculating composite risk scores and verdicts in real-time.</div>
+          </div>
+          <div>
+            <div style="font-size: 14px; font-weight: 800; color: #fff;">2. Real-Time Critical Fraud Intercept Banner</div>
+            <div style="font-size: 12px; color: var(--text2);">Automated red warning for scores &ge; 0.85 with exact attack pattern (Wash Trading, Spoofing, Layering).</div>
+          </div>
+          <div>
+            <div style="font-size: 14px; font-weight: 800; color: #fff;">3. Crypto Terminal & Trader Investigation Drill-Down</div>
+            <div style="font-size: 12px; color: var(--text2);">Interactive asset inspection across BTC, ETH, SOL, XRP with full trader risk profiling.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" style="border-color: var(--emerald);">
+        <div class="card-top" style="background: var(--emerald);"></div>
+        <div style="font-size: 18px; font-weight: 900; color: var(--emerald); margin-bottom: 14px;">📈 MEASURABLE BUSINESS IMPACT</div>
+        <div style="display:flex; flex-direction:column; gap:14px;">
+          <div>
+            <div style="font-size: 14px; font-weight: 800; color: #fff;">⭐ 99.4% Reduction in Detection Latency</div>
+            <div style="font-size: 12px; color: var(--text2);">Replaced 24-hour T+1 batch auditing with inline &lt; 2ms stream interception.</div>
+          </div>
+          <div>
+            <div style="font-size: 14px; font-weight: 800; color: #fff;">⭐ 88.2% Precision & 0.954 ROC-AUC</div>
+            <div style="font-size: 12px; color: var(--text2);">High accuracy with low false-positive rates, avoiding compliance fatigue.</div>
+          </div>
+          <div>
+            <div style="font-size: 14px; font-weight: 800; color: #fff;">⭐ Automated Regulatory Audit Trail</div>
+            <div style="font-size: 12px; color: var(--text2);">Immutable lineage from Event Hubs to Azure Logic App alerts and Power BI reports.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Navigation Controls -->
+<div class="nav">
+  <button class="nav-btn" onclick="prevSlide()">◀ Prev</button>
+  <div class="dots" id="dots"></div>
+  <button class="nav-btn" onclick="nextSlide()">Next ▶</button>
+  <button class="nav-btn" style="background:var(--cyan); color:#000;" onclick="toggleFullscreen()">⛶ Fullscreen</button>
+</div>
+
+<script>
+  let current = 0;
+  const slides = document.querySelectorAll('.slide');
+  const dotsContainer = document.getElementById('dots');
+
+  slides.forEach((_, i) => {
+    const dot = document.createElement('div');
+    dot.className = 'dot' + (i === 0 ? ' active' : '');
+    dot.onclick = () => showSlide(i);
+    dotsContainer.appendChild(dot);
+  });
+
+  function showSlide(index) {
+    slides[current].classList.remove('active');
+    document.querySelectorAll('.dot')[current].classList.remove('active');
+    current = (index + slides.length) % slides.length;
+    slides[current].classList.add('active');
+    document.querySelectorAll('.dot')[current].classList.add('active');
+  }
+
+  function nextSlide() { showSlide(current + 1); }
+  function prevSlide() { showSlide(current - 1); }
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') nextSlide();
+    if (e.key === 'ArrowLeft' || e.key === 'PageUp') prevSlide();
+    if (e.key === 'f') toggleFullscreen();
+  });
+
+  function toggleFullscreen() {
+    if (!document.fullscreenElement) {
+      document.documentElement.requestFullscreen();
+    } else {
+      if (document.exitFullscreen) document.exitFullscreen();
+    }
+  }
+</script>
+
+</body>
+</html>

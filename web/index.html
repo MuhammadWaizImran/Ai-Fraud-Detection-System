@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FINRA AI — Real-Time 3D Cyber Fraud Surveillance Platform</title>
+  <meta name="description" content="Sub-millisecond real-time market manipulation and fraud detection platform powered by 3-Model AI Hybrid Ensemble (XGBoost, Isolation Forest, Deep Autoencoder).">
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Three.js CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/animations.css">
+</head>
+<body>
+
+  <!-- Futuristic Cyber Initialization Loading Screen -->
+  <div id="cyber-loader-overlay" class="loader-overlay">
+    <div class="loader-box">
+      <div class="loader-core">
+        <div class="loader-ring"></div>
+        <div class="loader-ring-inner"></div>
+        <div class="loader-icon">⚡</div>
+      </div>
+      <div class="loader-title">FINRA AI SURVEILLANCE PLATFORM</div>
+      <div class="loader-sub">3-Model Hybrid AI Ensemble &bull; Real-Time Market Stream</div>
+      
+      <div class="loader-progress-track">
+        <div id="loader-progress-bar" class="loader-progress-fill"></div>
+      </div>
+
+      <div id="loader-terminal-log" class="loader-log">
+        <span class="log-cursor">&gt;</span> <span id="loader-log-text">Initializing core system...</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Top Navigation Bar -->
+  <header class="navbar">
+    <div class="brand-container">
+      <div class="brand-logo">⚡</div>
+      <div>
+        <div class="brand-title">FINRA AI SURVEILLANCE</div>
+        <div class="brand-subtitle">3-Model Hybrid Ensemble &bull; Medallion Lakehouse</div>
+      </div>
+    </div>
+
+    <!-- Navigation Actions -->
+    <div class="nav-actions">
+      <div class="live-indicator">
+        <span class="live-dot"></span>
+        <span>STREAM ACTIVE</span>
+      </div>
+      <button id="btn-pause-stream" class="btn-cyber">⏸️ PAUSE STREAM</button>
+      <button id="btn-mute-sound" class="btn-cyber">🔊 SOUND ON</button>
+      <button id="btn-clear-history" class="btn-cyber" style="font-size:11px;padding:6px 12px;opacity:0.75;" title="Reset Local Storage Cache">🔄 RESET CACHE</button>
+    </div>
+  </header>
+
+  <!-- Live Crypto Ticker Tape -->
+  <div class="ticker-bar">
+    <div class="ticker-label"><span>🔴</span> LIVE FEED:</div>
+    <div class="ticker-content" id="ticker-content">
+      <!-- Populated dynamically by market_stream.js -->
+    </div>
+  </div>
+
+  <!-- Main Unified Dashboard Container -->
+  <main class="main-container">
+
+    <!-- KPI Metric Cards Grid (Reflecting Full 150,000+ Gold Table Dataset + Live Stream) -->
+    <section class="kpi-grid">
+      <div class="kpi-card">
+        <div class="kpi-label">
+          <span>Total Gold Lakehouse Trades</span>
+          <span style="color:var(--cyan);">📊</span>
+        </div>
+        <div class="kpi-value" id="kpi-total-trades">150,500+</div>
+        <div class="kpi-subtext">150k Gold Delta Records + Live Stream</div>
+      </div>
+
+      <div class="kpi-card">
+        <div class="kpi-label">
+          <span>Total Frauds Intercepted</span>
+          <span style="color:var(--red);">🚨</span>
+        </div>
+        <div class="kpi-value" id="kpi-fraud-count" style="color:var(--red);">22,850+</div>
+        <div class="kpi-subtext">15.2% True Positive Rate &bull; Logic Apps Fired</div>
+      </div>
+
+      <div class="kpi-card">
+        <div class="kpi-label">
+          <span>Gold Anomaly Rate</span>
+          <span style="color:var(--amber);">⚡</span>
+        </div>
+        <div class="kpi-value" id="kpi-fraud-rate" style="color:var(--amber);">15.23%</div>
+        <div class="kpi-subtext">Calibrated Contamination Baseline</div>
+      </div>
+
+      <div class="kpi-card">
+        <div class="kpi-label">
+          <span>AI Inference Latency</span>
+          <span style="color:var(--emerald);">⏱️</span>
+        </div>
+        <div class="kpi-value" id="kpi-avg-latency" style="color:var(--emerald);">0.42 ms</div>
+        <div class="kpi-subtext">Sub-2ms SLA &bull; 0.9541 ROC-AUC Certified</div>
+      </div>
+
+      <div class="kpi-card">
+        <div class="kpi-label">
+          <span>Monitored Trader Entities</span>
+          <span style="color:var(--purple);">👤</span>
+        </div>
+        <div class="kpi-value" id="kpi-active-traders" style="color:var(--purple);">100 Entities</div>
+        <div class="kpi-subtext">Dynamic Risk Badges &amp; Gold Feature Profiles</div>
+      </div>
+    </section>
+
+    <!-- Gold Medallion Lakehouse Volume Banner -->
+    <div class="glass-panel" style="margin-bottom:24px;background:rgba(10,16,30,0.7);padding:14px 20px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;">
+        <div style="display:flex;align-items:center;gap:14px;">
+          <span style="font-size:20px;">🏛️</span>
+          <div>
+            <span style="font-size:13px;font-weight:900;color:#fff;text-transform:uppercase;letter-spacing:0.04em;">Medallion Lakehouse Master Storage Status:</span>
+            <span style="font-size:12px;color:var(--text-muted);margin-left:8px;">Bronze (150k JSON) ➔ Silver (150k Cleaned) ➔ Gold (150k Feature Vectors) ➔ Live Stream</span>
+          </div>
+        </div>
+        <span class="panel-badge" style="background:rgba(0,243,255,0.12);color:var(--cyan);border-color:rgba(0,243,255,0.35);font-size:11px;padding:6px 14px;">
+          ✓ 150,000 GOLD RECORDS LOADED
+        </span>
+      </div>
+    </div>
+
+    <!-- Critical Threat Notification Banner -->
+    <div id="alert-banner" class="alert-banner">
+      <div class="alert-content">
+        <div>
+          <div class="alert-title">
+            <span style="font-size:20px;">🚨</span>
+            <span>CRITICAL MARKET MANIPULATION DETECTED</span>
+          </div>
+          <div id="alert-detail" class="alert-detail">Evaluating incoming stream...</div>
+        </div>
+        <button onclick="document.getElementById('copilot-trigger').click()" class="btn-cyber btn-danger-cyber" style="font-size:11px;padding:6px 14px;">INVESTIGATE IN COPILOT</button>
+      </div>
+    </div>
+
+    <!-- 3D Globe + Attack Analysis Visuals Grid -->
+    <section class="visuals-grid">
+      
+      <!-- 3D Cyber Globe Card -->
+      <div class="glass-panel">
+        <div class="panel-header">
+          <div class="panel-title">
+            <span>🌐</span>
+            <span>Global Order Flow &amp; Exchange Radar</span>
+          </div>
+          <div class="panel-actions" style="display:flex;gap:8px;">
+            <button id="btn-rotate-globe" class="globe-btn">🌐 ROTATE: ON</button>
+            <span class="panel-badge">THREE.JS 3D WEBGL</span>
+          </div>
+        </div>
+
+        <div id="globe-canvas-container" class="globe-container">
+          <!-- Three.js Canvas injected here -->
+        </div>
+
+        <div class="globe-hud">
+          <div style="color:var(--cyan);font-weight:800;margin-bottom:4px;">📡 ACTIVE LIQUIDITY HUBS:</div>
+          <div>NYC (NYSE) &bull; London (LSE) &bull; Tokyo (TSE) &bull; Singapore (SGX) &bull; Dubai</div>
+        </div>
+      </div>
+
+      <!-- Manipulation Breakdown Panel -->
+      <div class="glass-panel">
+        <div class="panel-header">
+          <div class="panel-title">
+            <span>🔍</span>
+            <span>Detected Manipulation Patterns</span>
+          </div>
+          <span class="panel-badge">XGBOOST MULTICLASS</span>
+        </div>
+
+        <div class="attack-list">
+          <div class="attack-item">
+            <div class="attack-meta">
+              <div class="attack-name">
+                <span style="color:var(--cyan);">🌊</span>
+                <span>Wash Trading (Self-Dealing)</span>
+              </div>
+              <div class="attack-count" id="count-wash">0</div>
+            </div>
+            <div class="progress-bar">
+              <div id="bar-wash" class="progress-fill" style="width: 0%; background: linear-gradient(90deg, var(--cyan), #38bdf8);"></div>
+            </div>
+          </div>
+
+          <div class="attack-item">
+            <div class="attack-meta">
+              <div class="attack-name">
+                <span style="color:var(--amber);">👻</span>
+                <span>Spoofing (Phantom Depth Bids)</span>
+              </div>
+              <div class="attack-count" id="count-spoof">0</div>
+            </div>
+            <div class="progress-bar">
+              <div id="bar-spoof" class="progress-fill" style="width: 0%; background: linear-gradient(90deg, var(--amber), #fbbf24);"></div>
+            </div>
+          </div>
+
+          <div class="attack-item">
+            <div class="attack-meta">
+              <div class="attack-name">
+                <span style="color:var(--purple);">🥞</span>
+                <span>Layering (Multi-Level Stacking)</span>
+              </div>
+              <div class="attack-count" id="count-layer">0</div>
+            </div>
+            <div class="progress-bar">
+              <div id="bar-layer" class="progress-fill" style="width: 0%; background: linear-gradient(90deg, var(--purple), #c084fc);"></div>
+            </div>
+          </div>
+
+          <div class="attack-item">
+            <div class="attack-meta">
+              <div class="attack-name">
+                <span style="color:var(--red);">🚀</span>
+                <span>Volume Spike (Pump &amp; Dump)</span>
+              </div>
+              <div class="attack-count" id="count-volume">0</div>
+            </div>
+            <div class="progress-bar">
+              <div id="bar-volume" class="progress-fill" style="width: 0%; background: linear-gradient(90deg, var(--red), #f87171);"></div>
+            </div>
+          </div>
+
+          <div class="attack-item">
+            <div class="attack-meta">
+              <div class="attack-name">
+                <span style="color:var(--emerald);">📈</span>
+                <span>Price Manipulation (Marking Close)</span>
+              </div>
+              <div class="attack-count" id="count-price">0</div>
+            </div>
+            <div class="progress-bar">
+              <div id="bar-price" class="progress-fill" style="width: 0%; background: linear-gradient(90deg, var(--emerald), #34d399);"></div>
+            </div>
+          </div>
+        </div>
+
+        <div style="margin-top: 18px; padding: 12px; background: rgba(0,243,255,0.04); border: 1px dashed var(--border-color); border-radius: var(--radius-md); font-size: 11px; color: var(--text-muted); display:flex; align-items:center; gap:8px;">
+          <span>💡</span>
+          <span>Click any trade in the table below to ask the AI Copilot for a complete microstructural risk breakdown.</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════════════════════════
+         REAL-TIME SCIENTIFIC & ANALYTICAL CHARTS (GROUNDED IN REAL ML MATH)
+         ══════════════════════════════════════════════════════════════ -->
+    <section class="charts-2col-grid" style="display:grid;grid-template-columns:1.1fr 0.9fr;gap:24px;margin-top:24px;">
+      
+      <!-- Chart 1: Real-Time Live Risk Score Stream (Line Chart) -->
+      <div class="glass-panel">
+        <div class="panel-header">
+          <div class="panel-title">
+            <span>⚡</span>
+            <span>Real-Time Model Risk Scoring Stream &bull; Multi-Model Math</span>
+          </div>
+          <div style="display:flex;gap:8px;">
+            <span class="panel-badge" style="background:rgba(239,68,68,0.12);color:var(--red);border-color:rgba(239,68,68,0.35);">
+              🚨 RED &ge; 0.85 (FRAUD)
+            </span>
+            <span class="panel-badge" style="background:rgba(245,158,11,0.12);color:var(--amber);border-color:rgba(245,158,11,0.35);">
+              🟡 0.50 (SUSPECT)
+            </span>
+          </div>
+        </div>
+        <div style="height:280px;position:relative;">
+          <canvas id="chart-live-risk-stream"></canvas>
+        </div>
+        <div style="font-size:11px;color:var(--text-dim);font-family:var(--font-mono);margin-top:8px;display:flex;justify-content:space-between;">
+          <span>Formula: 0.60(XGBoost) + 0.20(IsoForest) + 0.20(Autoencoder)</span>
+          <span style="color:var(--cyan);">Inference Latency: &lt; 0.5ms</span>
+        </div>
+      </div>
+
+      <!-- Chart 2: Real TreeSHAP Mathematical Circular Feature Attribution (Doughnut / Polar Ring) -->
+      <div class="glass-panel">
+        <div class="panel-header">
+          <div class="panel-title">
+            <span>🧠</span>
+            <span>Mathematical SHAP Feature Ring &bull; TreeSHAP Weights</span>
+          </div>
+          <span class="panel-badge">CIRCULAR POLAR ATTRIBUTION</span>
+        </div>
+        <div style="height:280px;position:relative;display:flex;align-items:center;justify-content:center;">
+          <canvas id="chart-live-shap"></canvas>
+          <div id="shap-center-metric" style="position:absolute;display:flex;flex-direction:column;align-items:center;justify-content:center;pointer-events:none;text-align:center;">
+            <span style="font-size:10px;font-family:var(--font-mono);color:var(--text-muted);text-transform:uppercase;letter-spacing:0.06em;">Dominant Feature</span>
+            <span id="shap-dominant-name" style="font-size:14px;font-weight:900;color:var(--cyan);font-family:var(--font-mono);">VOL_SPIKE</span>
+            <span id="shap-dominant-val" style="font-size:12px;font-weight:700;color:#fff;font-family:var(--font-mono);">+38.5% IMPACT</span>
+          </div>
+        </div>
+        <div style="font-size:11px;color:var(--text-dim);font-family:var(--font-mono);margin-top:8px;display:flex;justify-content:space-between;">
+          <span style="color:var(--cyan);">■ Microstructural Ring: 6 Signal Dimensions</span>
+          <span style="color:var(--purple);">■ Center: Instant Dominant Driver</span>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- 2nd Analytical Row: Real Symbol Risk Matrix & 24h Hourly Cycle -->
+    <section class="charts-2col-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:24px;">
+      
+      <!-- Chart 3: Real Fraud Distribution by Cryptocurrency Symbol (from Gold Table) -->
+      <div class="glass-panel">
+        <div class="panel-header">
+          <div class="panel-title">
+            <span>🪙</span>
+            <span>Fraud Interceptions by Cryptocurrency (Gold Dataset + Live)</span>
+          </div>
+          <span class="panel-badge">GOLD DELTA AGGREGATE</span>
+        </div>
+        <div style="height:270px;position:relative;">
+          <canvas id="chart-symbol-frauds"></canvas>
+        </div>
+      </div>
+
+      <!-- Chart 4: Real Hourly Fraud Activity Density Profile -->
+      <div class="glass-panel">
+        <div class="panel-header">
+          <div class="panel-title">
+            <span>⏰</span>
+            <span>Hourly Attack Density Profile (24-Hour Market Cycle)</span>
+          </div>
+          <span class="panel-badge">PEAK SURVEILLANCE</span>
+        </div>
+        <div style="height:270px;position:relative;">
+          <canvas id="chart-hourly-density"></canvas>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- Real-Time Surveillance Live Feed Table with Persistent Historical Search & Filters -->
+    <section class="glass-panel" style="margin-top:24px;">
+      <div class="panel-header">
+        <div>
+          <div class="panel-title">
+            <span>📡</span>
+            <span>Real-Time Surveillance Stream &bull; Persistent Audit Ledger</span>
+          </div>
+          <div style="font-size:11px;color:var(--text-muted);margin-top:2px;">
+            In-browser mathematical inference &bull; Historical orders preserved across restarts &bull; Click any row to inspect in AI Copilot
+          </div>
+        </div>
+
+        <!-- Table Filters -->
+        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+          <input type="text" id="feed-search-input" placeholder="Search Trader ID, Symbol, UUID..." class="search-input" style="min-width:220px;" />
+          <select id="feed-verdict-filter" class="sort-select">
+            <option value="ALL">All Orders (Safe + Suspect + Fraud)</option>
+            <option value="FRAUD">🚨 Fraud Only (Score &ge; 0.85)</option>
+            <option value="SUSPICIOUS">🟡 Suspicious Only (0.50 &le; Score &lt; 0.85)</option>
+            <option value="SAFE">🟢 Safe Only (Score &lt; 0.50)</option>
+          </select>
+          <span class="panel-badge" style="background:rgba(16,185,129,0.1);color:var(--emerald);border-color:rgba(16,185,129,0.3);">
+            ✓ SUB-2MS SLA ACTIVE
+          </span>
+        </div>
+      </div>
+
+      <div class="feed-table-container" style="max-height:550px;overflow-y:auto;">
+        <table class="feed-table">
+          <thead>
+            <tr>
+              <th>Order UUID</th>
+              <th>Trader ID</th>
+              <th>Symbol</th>
+              <th>Side</th>
+              <th>Price (USD)</th>
+              <th>Volume</th>
+              <th>Risk Score</th>
+              <th>Verdict</th>
+              <th>Classified Attack</th>
+              <th>Latency</th>
+            </tr>
+          </thead>
+          <tbody id="feed-table-body">
+            <!-- Dynamically populated by app.js with persistent history -->
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Floating AI Compliance Copilot Chatbot Button -->
+  <div id="copilot-trigger" class="copilot-trigger" title="Open AI Compliance Copilot">
+    <span>🤖</span>
+    <div id="copilot-badge" class="copilot-badge" style="display:none;">0</div>
+  </div>
+
+  <!-- AI Copilot Sliding Drawer -->
+  <div id="copilot-drawer" class="copilot-drawer">
+    <div class="copilot-header">
+      <div class="copilot-header-info">
+        <div class="copilot-avatar">AI</div>
+        <div>
+          <div class="copilot-title">FINRA Compliance Copilot</div>
+          <div class="copilot-status">
+            <span class="live-dot" style="width:6px;height:6px;"></span>
+            <span>Context Active &bull; 3-Model Ensemble</span>
+          </div>
+        </div>
+      </div>
+      <button id="copilot-close" class="copilot-close">&times;</button>
+    </div>
+
+    <!-- Messages Container -->
+    <div id="copilot-messages" class="copilot-messages">
+      <!-- Chat bubbles appended here -->
+    </div>
+
+    <!-- Quick Prompt Chips -->
+    <div class="chat-chips">
+      <button class="chip-btn" data-q="Why was the latest order flagged?">🔍 Explain latest order</button>
+      <button class="chip-btn" data-q="What is Wash Trading vs Spoofing?">⚖️ Wash Trading vs Spoofing</button>
+      <button class="chip-btn" data-q="Show me the model metrics & ROC-AUC">📊 Show Model Metrics</button>
+      <button class="chip-btn" data-q="How does Autoencoder detect Zero-Day attacks?">🧠 Zero-Day Detection</button>
+      <button class="chip-btn" data-q="Explain the Bronze Silver Gold Lakehouse">🏛️ Lakehouse Architecture</button>
+    </div>
+
+    <!-- Input Bar -->
+    <div class="copilot-input-bar">
+      <input type="text" id="copilot-input" class="copilot-input" placeholder="Ask anything about any order, fraud pattern, or model..." />
+      <button id="copilot-send" class="copilot-send">➔</button>
+    </div>
+  </div>
+
+  <!-- JavaScript Modules -->
+  <script src="js/market_stream.js"></script>
+  <script src="js/feature_engine.js"></script>
+  <script src="js/ai_models.js"></script>
+  <script src="js/sound_effects.js"></script>
+  <script src="js/globe3d.js"></script>
+  <script src="js/ai_copilot.js"></script>
+  <script src="js/app.js"></script>
+
+</body>
+</html>

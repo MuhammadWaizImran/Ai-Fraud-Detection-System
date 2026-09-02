@@ -1,0 +1,6 @@
+fraud_type_predicted,event_count,fraud_count,suspicious_count,avg_risk_score,max_risk_score,distinct_traders_affected,distinct_symbols_affected,pct_of_total
+Volume Spike,1840,520,1320,0.5645,0.9777,52,5,32.86
+Wash Trading,1560,420,1140,0.5671,0.9731,19,8,27.86
+Layering,1120,280,840,0.6619,0.9833,41,7,20.0
+Spoofing,780,140,640,0.5656,0.9631,56,8,13.93
+Price Manipulation,300,60,240,0.6986,0.9888,53,10,5.36

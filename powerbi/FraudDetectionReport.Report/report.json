@@ -1,0 +1,114 @@
+{
+  "id": 0,
+  "resourcePackages": [],
+  "sections": [
+    {
+      "id": 0,
+      "name": "FINRA_Executive_Fraud_Scorecard",
+      "displayName": "Executive Scorecard \u2014 AI Fraud Surveillance",
+      "filters": "[]",
+      "ordinal": 0,
+      "width": 1280,
+      "height": 720,
+      "config": "{\"objects\": {\"background\": [{\"properties\": {\"color\": {\"solid\": {\"color\": \"#F4F5F7\"}}, \"transparency\": 0}}]}}",
+      "visualContainers": [
+        {
+          "x": 0,
+          "y": 0,
+          "z": 1000,
+          "width": 1280,
+          "height": 45,
+          "config": "{\"name\": \"TopDarkHeader\", \"singleVisual\": {\"visualType\": \"textbox\", \"objects\": {\"general\": [{\"properties\": {\"paragraphs\": [{\"textRuns\": [{\"value\": \"Bank executive scorecard  |  FINRA Market Surveillance & Real-Time AI Fraud Engine\", \"textStyle\": {\"fontFamily\": \"Segoe UI Semibold\", \"fontSize\": \"13pt\", \"color\": \"#FFFFFF\"}}]}]}}], \"background\": [{\"properties\": {\"color\": {\"solid\": {\"color\": \"#172B4D\"}}, \"transparency\": 0}}]}}}"
+        },
+        {
+          "x": 20,
+          "y": 48,
+          "z": 2000,
+          "width": 1240,
+          "height": 26,
+          "config": "{\"name\": \"SubHeaderMeta\", \"singleVisual\": {\"visualType\": \"textbox\", \"objects\": {\"general\": [{\"properties\": {\"paragraphs\": [{\"textRuns\": [{\"value\": \"AI Fraud Risk Model Surveillance  \\u2022  Q1 2026 - $142.6B Screened  \\u2022  Ensemble: XGBoost + IsolationForest + Autoencoder  \\u2022  Latency: 1.8ms\", \"textStyle\": {\"fontFamily\": \"Segoe UI\", \"fontSize\": \"9pt\", \"color\": \"#5E6C84\"}}]}]}}]}}}"
+        },
+        {
+          "x": 20,
+          "y": 75,
+          "z": 3000,
+          "width": 200,
+          "height": 95,
+          "config": "{\"name\": \"KPI_1\", \"singleVisual\": {\"visualType\": \"card\", \"projections\": {\"Values\": [{\"queryRef\": \"FraudExecutiveKPIs.Overall Fraud Rate\"}]}, \"objects\": {\"title\": [{\"properties\": {\"show\": true, \"text\": \"OVERALL FRAUD RATE\", \"fontColor\": {\"solid\": {\"color\": \"#0052CC\"}}, \"fontSize\": 9, \"fontFamily\": \"Segoe UI Semibold\"}}], \"labels\": [{\"properties\": {\"color\": {\"solid\": {\"color\": \"#172B4D\"}}, \"fontSize\": 26, \"fontFamily\": \"Segoe UI Bold\"}}], \"background\": [{\"properties\": {\"color\": {\"solid\": {\"color\": \"#FFFFFF\"}}, \"transparency\": 0}}], \"border\": [{\"properties\": {\"show\": true, \"color\": {\"solid\": {\"color\": \"#0052CC\"}}, \"radius\": 2}}]}}}"
+        },
+        {
+          "x": 228,
+          "y": 75,
+          "z": 3100,
+          "width": 200,
+          "height": 95,
+          "config": "{\"name\": \"KPI_2\", \"singleVisual\": {\"visualType\": \"card\", \"projections\": {\"Values\": [{\"queryRef\": \"FraudExecutiveKPIs.AI Model Confidence\"}]}, \"objects\": {\"title\": [{\"properties\": {\"show\": true, \"text\": \"AI MODEL CONFIDENCE\", \"fontColor\": {\"solid\": {\"color\": \"#0052CC\"}}, \"fontSize\": 9, \"fontFamily\": \"Segoe UI Semibold\"}}], \"labels\": [{\"properties\": {\"color\": {\"solid\": {\"color\": \"#00875A\"}}, \"fontSize\": 26, \"fontFamily\": \"Segoe UI Bold\"}}], \"background\": [{\"properties\": {\"color\": {\"solid\": {\"color\": \"#FFFFFF\"}}, \"transparency\": 0}}], \"border\": [{\"properties\": {\"show\": true, \"color\": {\"solid\": {\"color\": \"#0052CC\"}}, \"radius\": 2}}]}}}"
+        },
+        {
+          "x": 436,
+          "y": 75,
+          "z": 3200,
+          "width": 200,
+          "height": 95,
+          "config": "{\"name\": \"KPI_3\", \"singleVisual\": {\"visualType\": \"card\", \"projections\": {\"Values\": [{\"queryRef\": \"FraudExecutiveKPIs.Live Inference Latency\"}]}, \"objects\": {\"title\": [{\"properties\": {\"show\": true, \"text\": \"INFERENCE LATENCY\", \"fontColor\": {\"solid\": {\"color\": \"#0052CC\"}}, \"fontSize\": 9, \"fontFamily\": \"Segoe UI Semibold\"}}], \"labels\": [{\"properties\": {\"color\": {\"solid\": {\"color\": \"#0052CC\"}}, \"fontSize\": 26, \"fontFamily\": \"Segoe UI Bold\"}}], \"background\": [{\"properties\": {\"color\": {\"solid\": {\"color\": \"#FFFFFF\"}}, \"transparency\": 0}}], \"border\": [{\"properties\": {\"show\": true, \"color\": {\"solid\": {\"color\": \"#0052CC\"}}, \"radius\": 2}}]}}}"
+        },
+        {
+          "x": 644,
+          "y": 75,
+          "z": 3300,
+          "width": 200,
+          "height": 95,
+          "config": "{\"name\": \"KPI_4\", \"singleVisual\": {\"visualType\": \"card\", \"projections\": {\"Values\": [{\"queryRef\": \"FraudExecutiveKPIs.Screened Trading Volume\"}]}, \"objects\": {\"title\": [{\"properties\": {\"show\": true, \"text\": \"VOLUME SCREENED\", \"fontColor\": {\"solid\": {\"color\": \"#0052CC\"}}, \"fontSize\": 9, \"fontFamily\": \"Segoe UI Semibold\"}}], \"labels\": [{\"properties\": {\"color\": {\"solid\": {\"color\": \"#172B4D\"}}, \"fontSize\": 26, \"fontFamily\": \"Segoe UI Bold\"}}], \"background\": [{\"properties\": {\"color\": {\"solid\": {\"color\": \"#FFFFFF\"}}, \"transparency\": 0}}], \"border\": [{\"properties\": {\"show\": true, \"color\": {\"solid\": {\"color\": \"#0052CC\"}}, \"radius\": 2}}]}}}"
+        },
+        {
+          "x": 852,
+          "y": 75,
+          "z": 3400,
+          "width": 200,
+          "height": 95,
+          "config": "{\"name\": \"KPI_5\", \"singleVisual\": {\"visualType\": \"card\", \"projections\": {\"Values\": [{\"queryRef\": \"FraudExecutiveKPIs.Critical Fraud Intercepts\"}]}, \"objects\": {\"title\": [{\"properties\": {\"show\": true, \"text\": \"CRITICAL INTERCEPTS\", \"fontColor\": {\"solid\": {\"color\": \"#0052CC\"}}, \"fontSize\": 9, \"fontFamily\": \"Segoe UI Semibold\"}}], \"labels\": [{\"properties\": {\"color\": {\"solid\": {\"color\": \"#DE350B\"}}, \"fontSize\": 26, \"fontFamily\": \"Segoe UI Bold\"}}], \"background\": [{\"properties\": {\"color\": {\"solid\": {\"color\": \"#FFFFFF\"}}, \"transparency\": 0}}], \"border\": [{\"properties\": {\"show\": true, \"color\": {\"solid\": {\"color\": \"#0052CC\"}}, \"radius\": 2}}]}}}"
+        },
+        {
+          "x": 1060,
+          "y": 75,
+          "z": 3500,
+          "width": 200,
+          "height": 95,
+          "config": "{\"name\": \"KPI_6\", \"singleVisual\": {\"visualType\": \"card\", \"projections\": {\"Values\": [{\"queryRef\": \"FraudExecutiveKPIs.Loss Prevented (MTD)\"}]}, \"objects\": {\"title\": [{\"properties\": {\"show\": true, \"text\": \"LOSS PREVENTED (MTD)\", \"fontColor\": {\"solid\": {\"color\": \"#0052CC\"}}, \"fontSize\": 9, \"fontFamily\": \"Segoe UI Semibold\"}}], \"labels\": [{\"properties\": {\"color\": {\"solid\": {\"color\": \"#00875A\"}}, \"fontSize\": 26, \"fontFamily\": \"Segoe UI Bold\"}}], \"background\": [{\"properties\": {\"color\": {\"solid\": {\"color\": \"#FFFFFF\"}}, \"transparency\": 0}}], \"border\": [{\"properties\": {\"show\": true, \"color\": {\"solid\": {\"color\": \"#0052CC\"}}, \"radius\": 2}}]}}}"
+        },
+        {
+          "x": 20,
+          "y": 180,
+          "z": 4000,
+          "width": 600,
+          "height": 245,
+          "config": "{\"name\": \"RiskDistributionChart\", \"singleVisual\": {\"visualType\": \"clusteredColumnChart\", \"projections\": {\"Category\": [{\"queryRef\": \"MicrostructuralRiskDistribution.risk_tier_range\"}], \"Y\": [{\"queryRef\": \"MicrostructuralRiskDistribution.ai_fraud_probability_pct\"}, {\"queryRef\": \"MicrostructuralRiskDistribution.normal_market_baseline_pct\"}]}, \"objects\": {\"title\": [{\"properties\": {\"show\": true, \"text\": \"Microstructural Risk Distribution (AI Predicted vs Baseline Market)\", \"fontColor\": {\"solid\": {\"color\": \"#172B4D\"}}, \"fontSize\": 11, \"fontFamily\": \"Segoe UI Bold\"}}], \"background\": [{\"properties\": {\"color\": {\"solid\": {\"color\": \"#FFFFFF\"}}, \"transparency\": 0}}], \"border\": [{\"properties\": {\"show\": true, \"color\": {\"solid\": {\"color\": \"#EBECF0\"}}, \"radius\": 4}}], \"dataPoint\": [{\"properties\": {\"fill\": {\"solid\": {\"color\": \"#0052CC\"}}}}, {\"properties\": {\"fill\": {\"solid\": {\"color\": \"#A5ADBA\"}}}}]}}}"
+        },
+        {
+          "x": 640,
+          "y": 180,
+          "z": 4100,
+          "width": 620,
+          "height": 245,
+          "config": "{\"name\": \"PatternEvolutionChart\", \"singleVisual\": {\"visualType\": \"lineStackedColumnComboChart\", \"projections\": {\"Category\": [{\"queryRef\": \"FraudPatternEvolution.time_period\"}], \"Y\": [{\"queryRef\": \"FraudPatternEvolution.wash_trading_rate\"}, {\"queryRef\": \"FraudPatternEvolution.layering_rate\"}, {\"queryRef\": \"FraudPatternEvolution.spoofing_rate\"}], \"Y2\": [{\"queryRef\": \"FraudPatternEvolution.composite_ai_trend\"}]}, \"objects\": {\"title\": [{\"properties\": {\"show\": true, \"text\": \"Fraud Attack Pattern Evolution & Roll Rates (Quarterly Trend)\", \"fontColor\": {\"solid\": {\"color\": \"#172B4D\"}}, \"fontSize\": 11, \"fontFamily\": \"Segoe UI Bold\"}}], \"background\": [{\"properties\": {\"color\": {\"solid\": {\"color\": \"#FFFFFF\"}}, \"transparency\": 0}}], \"border\": [{\"properties\": {\"show\": true, \"color\": {\"solid\": {\"color\": \"#EBECF0\"}}, \"radius\": 4}}], \"dataPoint\": [{\"properties\": {\"fill\": {\"solid\": {\"color\": \"#FFAB00\"}}}}, {\"properties\": {\"fill\": {\"solid\": {\"color\": \"#FF7452\"}}}}, {\"properties\": {\"fill\": {\"solid\": {\"color\": \"#DE350B\"}}}}, {\"properties\": {\"fill\": {\"solid\": {\"color\": \"#0052CC\"}}}}]}}}"
+        },
+        {
+          "x": 20,
+          "y": 435,
+          "z": 5000,
+          "width": 500,
+          "height": 265,
+          "config": "{\"name\": \"AttackScenariosBar\", \"singleVisual\": {\"visualType\": \"clusteredBarChart\", \"projections\": {\"Category\": [{\"queryRef\": \"AIAttackScenarios.attack_scenario\"}], \"Y\": [{\"queryRef\": \"AIAttackScenarios.projected_financial_loss_m\"}]}, \"objects\": {\"title\": [{\"properties\": {\"show\": true, \"text\": \"AI Attack Scenarios \\u2014 Projected Value-at-Risk Exposure ($M)\", \"fontColor\": {\"solid\": {\"color\": \"#172B4D\"}}, \"fontSize\": 11, \"fontFamily\": \"Segoe UI Bold\"}}], \"background\": [{\"properties\": {\"color\": {\"solid\": {\"color\": \"#FFFFFF\"}}, \"transparency\": 0}}], \"border\": [{\"properties\": {\"show\": true, \"color\": {\"solid\": {\"color\": \"#EBECF0\"}}, \"radius\": 4}}], \"dataPoint\": [{\"properties\": {\"fill\": {\"solid\": {\"color\": \"#DE350B\"}}}}]}}}"
+        },
+        {
+          "x": 530,
+          "y": 435,
+          "z": 5100,
+          "width": 730,
+          "height": 265,
+          "config": "{\"name\": \"RealtimeAIGrid\", \"singleVisual\": {\"visualType\": \"tableEx\", \"projections\": {\"Values\": [{\"queryRef\": \"RealtimeAIInterceptFeed.order_id\"}, {\"queryRef\": \"RealtimeAIInterceptFeed.trader_id\"}, {\"queryRef\": \"RealtimeAIInterceptFeed.symbol\"}, {\"queryRef\": \"RealtimeAIInterceptFeed.ai_predicted_pattern\"}, {\"queryRef\": \"RealtimeAIInterceptFeed.ensemble_risk_score\"}, {\"queryRef\": \"RealtimeAIInterceptFeed.decision\"}, {\"queryRef\": \"RealtimeAIInterceptFeed.compliance_action\"}]}, \"objects\": {\"title\": [{\"properties\": {\"show\": true, \"text\": \"AI Real-Time Live Feed \\u2014 Instant Intercepts & Automated Actions\", \"fontColor\": {\"solid\": {\"color\": \"#172B4D\"}}, \"fontSize\": 11, \"fontFamily\": \"Segoe UI Bold\"}}], \"background\": [{\"properties\": {\"color\": {\"solid\": {\"color\": \"#FFFFFF\"}}, \"transparency\": 0}}], \"border\": [{\"properties\": {\"show\": true, \"color\": {\"solid\": {\"color\": \"#EBECF0\"}}, \"radius\": 4}}], \"columnHeaders\": [{\"properties\": {\"fontColor\": {\"solid\": {\"color\": \"#0052CC\"}}, \"backColor\": {\"solid\": {\"color\": \"#F4F5F7\"}}}}]}}}"
+        }
+      ]
+    }
+  ]
+}

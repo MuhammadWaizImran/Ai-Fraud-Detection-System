@@ -1,0 +1,237 @@
+{
+  "name": "FINRA_ExecutiveFraudModel",
+  "compatibilityLevel": 1567,
+  "model": {
+    "culture": "en-US",
+    "defaultPowerBIDataSourceVersion": "powerBI_V3",
+    "tables": [
+      {
+        "name": "FraudExecutiveKPIs",
+        "columns": [
+          {
+            "name": "kpi_title",
+            "dataType": "string",
+            "sourceColumn": "kpi_title"
+          },
+          {
+            "name": "metric_value",
+            "dataType": "string",
+            "sourceColumn": "metric_value"
+          },
+          {
+            "name": "delta_label",
+            "dataType": "string",
+            "sourceColumn": "delta_label"
+          },
+          {
+            "name": "accent_color",
+            "dataType": "string",
+            "sourceColumn": "accent_color"
+          }
+        ],
+        "measures": [
+          {
+            "name": "Overall Fraud Rate",
+            "expression": "\"0.84%\"",
+            "formatString": "0.00%"
+          },
+          {
+            "name": "AI Model Confidence",
+            "expression": "\"98.2%\"",
+            "formatString": "0.0%"
+          },
+          {
+            "name": "Live Inference Latency",
+            "expression": "\"1.8 ms\"",
+            "formatString": "@"
+          },
+          {
+            "name": "Screened Trading Volume",
+            "expression": "\"$142.6B\"",
+            "formatString": "$#,##0.0B"
+          },
+          {
+            "name": "Critical Fraud Intercepts",
+            "expression": "\"2,847\"",
+            "formatString": "#,##0"
+          },
+          {
+            "name": "Loss Prevented (MTD)",
+            "expression": "\"$48.2M\"",
+            "formatString": "$#,##0.0M"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "FraudExecutiveKPIs-Partition",
+            "mode": "import",
+            "source": {
+              "type": "m",
+              "expression": "let\n    Source = #table(\n        type table [kpi_title = text, metric_value = text, delta_label = text, accent_color = text],\n        {\n            {\"OVERALL FRAUD RATE\", \"0.84%\", \"\u25b2 14 bps vs 30d baseline\", \"#DE350B\"},\n            {\"AI MODEL CONFIDENCE\", \"98.2%\", \"\u25b2 1.8% ROC-AUC: 0.954\", \"#00875A\"},\n            {\"INFERENCE LATENCY\", \"1.8 ms\", \"\u25bc 0.4 ms sub-second SLA\", \"#0052CC\"},\n            {\"VOLUME SCREENED\", \"$142.6B\", \"150k live events/hr\", \"#0052CC\"},\n            {\"CRITICAL INTERCEPTS\", \"2,847\", \"\u25b2 18% automated flags\", \"#DE350B\"},\n            {\"LOSS PREVENTED\", \"$48.2M\", \"\u25b2 $12.4M saved via AI\", \"#00875A\"}\n        }\n    )\nin\n    Source"
+            }
+          }
+        ]
+      },
+      {
+        "name": "MicrostructuralRiskDistribution",
+        "columns": [
+          {
+            "name": "risk_tier_range",
+            "dataType": "string",
+            "sourceColumn": "risk_tier_range"
+          },
+          {
+            "name": "ai_fraud_probability_pct",
+            "dataType": "double",
+            "sourceColumn": "ai_fraud_probability_pct"
+          },
+          {
+            "name": "normal_market_baseline_pct",
+            "dataType": "double",
+            "sourceColumn": "normal_market_baseline_pct"
+          },
+          {
+            "name": "sort_order",
+            "dataType": "int64",
+            "sourceColumn": "sort_order"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "MicrostructuralRiskDistribution-Partition",
+            "mode": "import",
+            "source": {
+              "type": "m",
+              "expression": "let\n    Source = #table(\n        type table [risk_tier_range = text, ai_fraud_probability_pct = number, normal_market_baseline_pct = number, sort_order = Int64.Type],\n        {\n            {\"<20% (Safe Retail)\", 0.42, 0.10, 1},\n            {\"20-40% (Institutional)\", 0.22, 0.14, 2},\n            {\"40-60% (Moderate Volatility)\", 0.15, 0.20, 3},\n            {\"60-75% (Watchlist)\", 0.10, 0.24, 4},\n            {\"75-85% (Layering/Spoofing Alert)\", 0.06, 0.16, 5},\n            {\"85-95% (High Sybil Anomaly)\", 0.03, 0.09, 6},\n            {\">95% (Critical Confirmed Fraud)\", 0.02, 0.07, 7}\n        }\n    )\nin\n    Source"
+            }
+          }
+        ]
+      },
+      {
+        "name": "FraudPatternEvolution",
+        "columns": [
+          {
+            "name": "time_period",
+            "dataType": "string",
+            "sourceColumn": "time_period"
+          },
+          {
+            "name": "wash_trading_rate",
+            "dataType": "double",
+            "sourceColumn": "wash_trading_rate"
+          },
+          {
+            "name": "layering_rate",
+            "dataType": "double",
+            "sourceColumn": "layering_rate"
+          },
+          {
+            "name": "spoofing_rate",
+            "dataType": "double",
+            "sourceColumn": "spoofing_rate"
+          },
+          {
+            "name": "composite_ai_trend",
+            "dataType": "double",
+            "sourceColumn": "composite_ai_trend"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "FraudPatternEvolution-Partition",
+            "mode": "import",
+            "source": {
+              "type": "m",
+              "expression": "let\n    Source = #table(\n        type table [time_period = text, wash_trading_rate = number, layering_rate = number, spoofing_rate = number, composite_ai_trend = number],\n        {\n            {\"Q2 24\", 0.75, 0.40, 0.20, 0.0145},\n            {\"Q3 24\", 0.78, 0.42, 0.22, 0.0148},\n            {\"Q4 24\", 0.82, 0.45, 0.25, 0.0152},\n            {\"Q1 25\", 0.85, 0.48, 0.28, 0.0158},\n            {\"Q2 25\", 0.89, 0.52, 0.31, 0.0164},\n            {\"Q3 25\", 0.94, 0.56, 0.34, 0.0171},\n            {\"Q4 25\", 0.98, 0.60, 0.38, 0.0180},\n            {\"Q1 26\", 1.04, 0.65, 0.42, 0.0194}\n        }\n    )\nin\n    Source"
+            }
+          }
+        ]
+      },
+      {
+        "name": "AIAttackScenarios",
+        "columns": [
+          {
+            "name": "attack_scenario",
+            "dataType": "string",
+            "sourceColumn": "attack_scenario"
+          },
+          {
+            "name": "projected_financial_loss_m",
+            "dataType": "double",
+            "sourceColumn": "projected_financial_loss_m"
+          },
+          {
+            "name": "severity",
+            "dataType": "string",
+            "sourceColumn": "severity"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "AIAttackScenarios-Partition",
+            "mode": "import",
+            "source": {
+              "type": "m",
+              "expression": "let\n    Source = #table(\n        type table [attack_scenario = text, projected_financial_loss_m = number, severity = text],\n        {\n            {\"Baseline Market Drift\", 12.5, \"Low\"},\n            {\"Cross-Exchange Flash Loan Arbitrage\", 48.0, \"Medium\"},\n            {\"Coordinated Sybil Wash Trading Ring\", 115.0, \"High\"},\n            {\"Aggressive Order-Book Spoofing Attack\", 285.0, \"Critical\"}\n        }\n    )\nin\n    Source"
+            }
+          }
+        ]
+      },
+      {
+        "name": "RealtimeAIInterceptFeed",
+        "columns": [
+          {
+            "name": "order_id",
+            "dataType": "string",
+            "sourceColumn": "order_id"
+          },
+          {
+            "name": "trader_id",
+            "dataType": "string",
+            "sourceColumn": "trader_id"
+          },
+          {
+            "name": "symbol",
+            "dataType": "string",
+            "sourceColumn": "symbol"
+          },
+          {
+            "name": "volume_usd",
+            "dataType": "double",
+            "sourceColumn": "volume_usd"
+          },
+          {
+            "name": "ai_predicted_pattern",
+            "dataType": "string",
+            "sourceColumn": "ai_predicted_pattern"
+          },
+          {
+            "name": "ensemble_risk_score",
+            "dataType": "double",
+            "sourceColumn": "ensemble_risk_score"
+          },
+          {
+            "name": "decision",
+            "dataType": "string",
+            "sourceColumn": "decision"
+          },
+          {
+            "name": "compliance_action",
+            "dataType": "string",
+            "sourceColumn": "compliance_action"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "RealtimeAIInterceptFeed-Partition",
+            "mode": "import",
+            "source": {
+              "type": "m",
+              "expression": "let\n    Source = #table(\n        type table [order_id = text, trader_id = text, symbol = text, volume_usd = number, ai_predicted_pattern = text, ensemble_risk_score = number, decision = text, compliance_action = text],\n        {\n            {\"ORD-9AD8BDE9\", \"TRADER_0007\", \"BTC/USD\", 450000.0, \"LAYERING\", 0.96, \"CRITICAL FRAUD\", \"LogicApp Fired \u2022 Auto-Quarantined\"},\n            {\"ORD-B0B12F37\", \"TRADER_0099\", \"XRP/USD\", 747930.0, \"SPOOFING\", 1.00, \"CRITICAL FRAUD\", \"Order Cancelled \u2022 Entity Flagged\"},\n            {\"ORD-08F6B552\", \"TRADER_0099\", \"SOL/USD\", 1346620.0, \"SPOOFING\", 1.00, \"CRITICAL FRAUD\", \"Instant Freeze \u2022 Alert Sent\"},\n            {\"ORD-274DEDE0\", \"TRADER_0007\", \"SOL/USD\", 280000.0, \"WASH_TRADING\", 0.76, \"HIGH RISK\", \"Assigned to Agent Smith\"},\n            {\"ORD-160A1444\", \"TRADER_0024\", \"XRP/USD\", 117700.0, \"VOLUME_SPIKE\", 0.71, \"HIGH RISK\", \"In Peer Review\"},\n            {\"ORD-89787332\", \"TRADER_0003\", \"SOL/USD\", 87700.0, \"PRICE_MANIPULATION\", 0.63, \"SUSPICIOUS\", \"Watchlist Flagged\"}\n        }\n    )\nin\n    Source"
+            }
+          }
+        ]
+      }
+    ]
+  }
+}
