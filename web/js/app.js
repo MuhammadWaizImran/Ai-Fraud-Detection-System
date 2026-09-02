@@ -59,7 +59,7 @@ document.addEventListener('DOMContentLoaded', () => {
   let liveTradesCounter = 0;
   let liveFraudsCounter = 0;
 
-  let isStreamRunning = true;
+  let isStreamRunning = false; // By default OFF to respect paused Azure compute status
   let totalLatency = 0;
   let unreadAlerts = 0;
   const attackCounts = {
@@ -799,11 +799,25 @@ document.addEventListener('DOMContentLoaded', () => {
   addMessage("👋 **Welcome to FINRA AI Compliance Copilot!**\n\nI monitor our 3-Model Hybrid Ensemble (XGBoost, Isolation Forest, Autoencoder) in real-time. **Click any trade in the table** to get an instant AI risk breakdown, or ask me any question below!", 'ai');
 
   // Controls Event Listeners
+  const liveIndicatorEl = document.querySelector('.live-indicator');
+  
+  function updateStreamUI() {
+    btnPauseStream.innerText = isStreamRunning ? '⏸️ PAUSE STREAM' : '▶️ START LIVE STREAM';
+    btnPauseStream.className = isStreamRunning ? 'btn-cyber' : 'btn-cyber btn-primary-pulse';
+    if (liveIndicatorEl) {
+      liveIndicatorEl.innerHTML = isStreamRunning
+        ? '<span class="live-dot" style="background:#10b981;box-shadow:0 0 8px #10b981;"></span><span style="color:#10b981;">🥇 GOLD STREAM ACTIVE</span>'
+        : '<span class="live-dot" style="background:#ef4444;box-shadow:0 0 8px #ef4444;"></span><span style="color:#ef4444;">🔴 PIPELINE IDLE (AZURE PAUSED)</span>';
+    }
+  }
+
   btnPauseStream.addEventListener('click', () => {
     isStreamRunning = !isStreamRunning;
-    btnPauseStream.innerText = isStreamRunning ? '⏸️ PAUSE STREAM' : '▶️ RESUME STREAM';
-    btnPauseStream.className = isStreamRunning ? 'btn-cyber' : 'btn-cyber btn-danger-cyber';
+    updateStreamUI();
   });
+
+  // Set initial indicator state
+  updateStreamUI();
 
   btnMuteSound.addEventListener('click', () => {
     const isMuted = SoundFX.toggleMute();
