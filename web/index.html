@@ -354,29 +354,110 @@
 
     <!-- Real-Time Surveillance Live Feed Table with Persistent Historical Search & Filters -->
     <section class="glass-panel" style="margin-top:24px;">
-      <div class="panel-header">
-        <div>
-          <div class="panel-title">
-            <span>📡</span>
-            <span>Real-Time Surveillance Stream &bull; Persistent Audit Ledger</span>
+      <div class="panel-header" style="flex-direction:column;align-items:flex-start;gap:14px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;width:100%;flex-wrap:wrap;gap:10px;">
+          <div>
+            <div class="panel-title">
+              <span>📡</span>
+              <span>Real-Time Surveillance Stream &bull; Persistent Audit Ledger</span>
+            </div>
+            <div style="font-size:11px;color:var(--text-muted);margin-top:2px;">
+              In-browser mathematical inference &bull; Historical orders preserved across restarts &bull; Click any row to inspect in AI Copilot
+            </div>
           </div>
-          <div style="font-size:11px;color:var(--text-muted);margin-top:2px;">
-            In-browser mathematical inference &bull; Historical orders preserved across restarts &bull; Click any row to inspect in AI Copilot
+          <div style="display:flex;align-items:center;gap:8px;">
+            <span id="filtered-count-badge" class="panel-badge" style="background:rgba(0,243,255,0.1);color:var(--cyan);border-color:rgba(0,243,255,0.3);font-weight:700;">
+              Showing: 80 / 80 Events
+            </span>
+            <span class="panel-badge" style="background:rgba(16,185,129,0.1);color:var(--emerald);border-color:rgba(16,185,129,0.3);">
+              ✓ SUB-2MS SLA ACTIVE
+            </span>
           </div>
         </div>
 
-        <!-- Table Filters -->
-        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
-          <input type="text" id="feed-search-input" placeholder="Search Trader ID, Symbol, UUID..." class="search-input" style="min-width:220px;" />
-          <select id="feed-verdict-filter" class="sort-select">
-            <option value="ALL">All Orders (Safe + Suspect + Fraud)</option>
-            <option value="FRAUD">🚨 Fraud Only (Score &ge; 0.85)</option>
-            <option value="SUSPICIOUS">🟡 Suspicious Only (0.50 &le; Score &lt; 0.85)</option>
-            <option value="SAFE">🟢 Safe Only (Score &lt; 0.50)</option>
-          </select>
-          <span class="panel-badge" style="background:rgba(16,185,129,0.1);color:var(--emerald);border-color:rgba(16,185,129,0.3);">
-            ✓ SUB-2MS SLA ACTIVE
-          </span>
+        <!-- Streamlit-Style Multi-Dimensional Filter Control Bar -->
+        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;width:100%;background:rgba(10,16,30,0.6);padding:12px 14px;border-radius:12px;border:1px solid rgba(255,255,255,0.06);">
+          <!-- 1. Limit / Event Count Filter -->
+          <div style="display:flex;flex-direction:column;gap:4px;">
+            <label style="font-size:10px;font-weight:800;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.05em;">Display Limit</label>
+            <select id="feed-limit-filter" class="sort-select" style="min-width:130px;">
+              <option value="25">25 Events</option>
+              <option value="50">50 Events</option>
+              <option value="100" selected>100 Events</option>
+              <option value="250">250 Events</option>
+              <option value="500">500 Events</option>
+              <option value="ALL">All Historical</option>
+            </select>
+          </div>
+
+          <!-- 2. Verdict Filter -->
+          <div style="display:flex;flex-direction:column;gap:4px;">
+            <label style="font-size:10px;font-weight:800;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.05em;">Verdict Tier</label>
+            <select id="feed-verdict-filter" class="sort-select" style="min-width:140px;">
+              <option value="ALL">All Verdicts</option>
+              <option value="FRAUD">🚨 Fraud Only (&ge;0.85)</option>
+              <option value="SUSPICIOUS">🟡 Suspicious (0.50-0.85)</option>
+              <option value="SAFE">🟢 Safe Only (&lt;0.50)</option>
+            </select>
+          </div>
+
+          <!-- 3. Symbol / Crypto Asset Filter -->
+          <div style="display:flex;flex-direction:column;gap:4px;">
+            <label style="font-size:10px;font-weight:800;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.05em;">Crypto Asset</label>
+            <select id="feed-symbol-filter" class="sort-select" style="min-width:120px;">
+              <option value="ALL">All Coins</option>
+              <option value="BTC">BTC (Bitcoin)</option>
+              <option value="ETH">ETH (Ethereum)</option>
+              <option value="SOL">SOL (Solana)</option>
+              <option value="BNB">BNB (Binance)</option>
+              <option value="XRP">XRP (Ripple)</option>
+              <option value="ADA">ADA (Cardano)</option>
+              <option value="DOGE">DOGE (Dogecoin)</option>
+              <option value="DOT">DOT (Polkadot)</option>
+              <option value="AVAX">AVAX (Avalanche)</option>
+              <option value="LINK">LINK (Chainlink)</option>
+              <option value="MATIC">MATIC (Polygon)</option>
+            </select>
+          </div>
+
+          <!-- 4. Attack Pattern Filter -->
+          <div style="display:flex;flex-direction:column;gap:4px;">
+            <label style="font-size:10px;font-weight:800;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.05em;">Attack Modality</label>
+            <select id="feed-attack-filter" class="sort-select" style="min-width:145px;">
+              <option value="ALL">All Modalities</option>
+              <option value="wash_trading">🌊 Wash Trading</option>
+              <option value="spoofing">👻 Spoofing</option>
+              <option value="layering">🥞 Layering</option>
+              <option value="volume_spike">🚀 Volume Spike</option>
+              <option value="price_manipulation">📈 Price Manipulation</option>
+            </select>
+          </div>
+
+          <!-- 5. Min Risk Score Filter -->
+          <div style="display:flex;flex-direction:column;gap:4px;">
+            <label style="font-size:10px;font-weight:800;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.05em;">Min Risk Score</label>
+            <select id="feed-minscore-filter" class="sort-select" style="min-width:125px;">
+              <option value="0.0">All (0.00+)</option>
+              <option value="0.50">&ge; 0.50 Suspect</option>
+              <option value="0.70">&ge; 0.70 Elevated</option>
+              <option value="0.85">&ge; 0.85 Critical</option>
+              <option value="0.90">&ge; 0.90 Extreme</option>
+            </select>
+          </div>
+
+          <!-- 6. Search Input -->
+          <div style="display:flex;flex-direction:column;gap:4px;flex:1;min-width:180px;">
+            <label style="font-size:10px;font-weight:800;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.05em;">Live Search</label>
+            <input type="text" id="feed-search-input" placeholder="Trader ID (TRADER_0001), Symbol, UUID..." class="search-input" style="width:100%;height:34px;" />
+          </div>
+
+          <!-- Reset Filters Button -->
+          <div style="display:flex;flex-direction:column;gap:4px;justify-content:flex-end;">
+            <label style="font-size:10px;font-weight:800;color:transparent;">Reset</label>
+            <button id="btn-reset-filters" class="badge-btn" style="height:34px;background:rgba(255,255,255,0.08);color:#fff;border:1px solid rgba(255,255,255,0.15);padding:0 12px;cursor:pointer;border-radius:8px;font-size:11px;font-weight:700;">
+              Reset Filters
+            </button>
+          </div>
         </div>
       </div>
 

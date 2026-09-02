@@ -611,6 +611,13 @@ document.addEventListener('DOMContentLoaded', () => {
     }, 4500);
   }
 
+  const feedLimitFilter = document.getElementById('feed-limit-filter');
+  const feedSymbolFilter = document.getElementById('feed-symbol-filter');
+  const feedAttackFilter = document.getElementById('feed-attack-filter');
+  const feedMinScoreFilter = document.getElementById('feed-minscore-filter');
+  const filteredCountBadge = document.getElementById('filtered-count-badge');
+  const btnResetFilters = document.getElementById('btn-reset-filters');
+
   function renderTableRow(order, isLive = true) {
     let verdictClass = 'pill-safe';
     if (order.verdict === 'FRAUD') verdictClass = 'pill-fraud';
@@ -621,21 +628,23 @@ document.addEventListener('DOMContentLoaded', () => {
     const tr = document.createElement('tr');
     if (isLive) tr.className = 'feed-row-new';
     tr.setAttribute('data-verdict', order.verdict);
-    tr.setAttribute('data-trader', order.trader_id.toLowerCase());
-    tr.setAttribute('data-symbol', order.symbol.toLowerCase());
-    tr.setAttribute('data-id', order.order_id.toLowerCase());
+    tr.setAttribute('data-trader', (order.trader_id || '').toLowerCase());
+    tr.setAttribute('data-symbol', (order.symbol || '').toUpperCase());
+    tr.setAttribute('data-id', (order.order_id || '').toLowerCase());
+    tr.setAttribute('data-attack', (order.attack_type || 'none').toLowerCase());
+    tr.setAttribute('data-score', (order.risk_score || 0).toString());
 
     tr.innerHTML = `
-      <td style="color:#fff;font-weight:700;">${order.order_id.substring(0, 12)}...</td>
+      <td style="color:#fff;font-weight:700;">${(order.order_id || '').substring(0, 12)}...</td>
       <td style="color:var(--text-muted);">${order.trader_id}</td>
       <td style="color:var(--cyan);font-weight:800;">${order.symbol}</td>
-      <td class="${orderTypeClass}">${order.order_type.toUpperCase()}</td>
-      <td style="color:#fff;">$${order.price.toLocaleString(undefined, {minimumFractionDigits: 2})}</td>
-      <td>${order.volume.toFixed(2)}</td>
-      <td style="font-weight:800;color:${order.verdict === 'FRAUD' ? 'var(--red)' : (order.verdict === 'SUSPICIOUS' ? 'var(--amber)' : 'var(--emerald)')};">${order.risk_score}</td>
+      <td class="${orderTypeClass}">${(order.order_type || 'BUY').toUpperCase()}</td>
+      <td style="color:#fff;">$${parseFloat(order.price || 0).toLocaleString(undefined, {minimumFractionDigits: 2})}</td>
+      <td>${parseFloat(order.volume || 0).toFixed(2)}</td>
+      <td style="font-weight:800;color:${order.risk_score >= 0.85 ? 'var(--red)' : (order.risk_score >= 0.5 ? 'var(--amber)' : 'var(--emerald)')};">${order.risk_score}</td>
       <td><span class="pill ${verdictClass}">${order.verdict}</span></td>
-      <td style="color:var(--text-dim);font-size:11px;">${order.attack_type.replace('_', ' ').toUpperCase()}</td>
-      <td style="color:var(--cyan);font-weight:700;font-size:11px;">${order.latency_ms}ms</td>
+      <td style="color:var(--text-dim);font-size:11px;">${(order.attack_type || 'NONE').replace(/_/g, ' ').toUpperCase()}</td>
+      <td style="color:var(--cyan);font-weight:700;font-size:11px;">${(order.latency_ms || 0.42).toFixed(2)}ms</td>
     `;
 
     // Click row to explain in AI Copilot Chatbot
@@ -651,7 +660,7 @@ document.addEventListener('DOMContentLoaded', () => {
       } else {
         feedTableBody.appendChild(tr);
       }
-      while (feedTableBody.children.length > 200) {
+      while (feedTableBody.children.length > 500) {
         feedTableBody.removeChild(feedTableBody.lastChild);
       }
     } else {
@@ -659,31 +668,67 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // 6. Search & Verdict Filter Functionality
+  // 6. Streamlit-Style Multi-Dimensional Filtering Logic
   function applyTableFilters() {
     const searchTerm = (feedSearchInput?.value || '').toLowerCase().trim();
     const selectedVerdict = feedVerdictFilter?.value || 'ALL';
+    const selectedSymbol = feedSymbolFilter?.value || 'ALL';
+    const selectedAttack = feedAttackFilter?.value || 'ALL';
+    const minScore = parseFloat(feedMinScoreFilter?.value || '0.0');
+    const limitVal = feedLimitFilter?.value || '100';
+    const maxVisible = limitVal === 'ALL' ? 99999 : parseInt(limitVal, 10);
 
     const rows = feedTableBody.querySelectorAll('tr');
+    let visibleCount = 0;
+    let totalScanned = rows.length;
+
     rows.forEach(row => {
       const trader = row.getAttribute('data-trader') || '';
       const symbol = row.getAttribute('data-symbol') || '';
       const id = row.getAttribute('data-id') || '';
       const verdict = row.getAttribute('data-verdict') || '';
+      const attack = row.getAttribute('data-attack') || '';
+      const score = parseFloat(row.getAttribute('data-score') || '0');
 
-      const matchesSearch = !searchTerm || trader.includes(searchTerm) || symbol.includes(searchTerm) || id.includes(searchTerm);
+      const matchesSearch = !searchTerm || trader.includes(searchTerm) || symbol.toLowerCase().includes(searchTerm) || id.includes(searchTerm);
       const matchesVerdict = selectedVerdict === 'ALL' || verdict === selectedVerdict;
+      const matchesSymbol = selectedSymbol === 'ALL' || symbol === selectedSymbol;
+      const matchesAttack = selectedAttack === 'ALL' || attack === selectedAttack.toLowerCase();
+      const matchesScore = score >= minScore;
 
-      if (matchesSearch && matchesVerdict) {
-        row.style.display = '';
+      if (matchesSearch && matchesVerdict && matchesSymbol && matchesAttack && matchesScore) {
+        if (visibleCount < maxVisible) {
+          row.style.display = '';
+          visibleCount++;
+        } else {
+          row.style.display = 'none';
+        }
       } else {
         row.style.display = 'none';
       }
     });
+
+    if (filteredCountBadge) {
+      filteredCountBadge.innerText = `Showing: ${visibleCount} / ${totalScanned} Events`;
+      filteredCountBadge.style.color = visibleCount === 0 ? 'var(--red)' : 'var(--cyan)';
+    }
   }
 
+  // Bind All Filter Event Listeners
+  [feedLimitFilter, feedVerdictFilter, feedSymbolFilter, feedAttackFilter, feedMinScoreFilter].forEach(el => {
+    el?.addEventListener('change', applyTableFilters);
+  });
   feedSearchInput?.addEventListener('input', applyTableFilters);
-  feedVerdictFilter?.addEventListener('change', applyTableFilters);
+
+  btnResetFilters?.addEventListener('click', () => {
+    if (feedLimitFilter) feedLimitFilter.value = '100';
+    if (feedVerdictFilter) feedVerdictFilter.value = 'ALL';
+    if (feedSymbolFilter) feedSymbolFilter.value = 'ALL';
+    if (feedAttackFilter) feedAttackFilter.value = 'ALL';
+    if (feedMinScoreFilter) feedMinScoreFilter.value = '0.0';
+    if (feedSearchInput) feedSearchInput.value = '';
+    applyTableFilters();
+  });
 
   // Reset Cache Button
   btnClearHistory?.addEventListener('click', () => {
