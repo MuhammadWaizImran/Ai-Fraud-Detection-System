@@ -3,772 +3,1052 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>FINRA AI — Real-Time Market Manipulation & Fraud Surveillance Suite</title>
-  <meta name="description" content="Enterprise-grade real-time market manipulation and financial fraud surveillance platform engineered with Azure Databricks Medallion Lakehouse and 3-Model AI Hybrid Ensemble." />
+  <title>risk signal — Realtime transaction intelligence</title>
+  <meta name="description" content="A cloud-native fraud detection pipeline for digital assets — built to turn live market and transaction data into decisions your team can inspect, trust, and act on." />
 
-  <!-- Typography -->
+  <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600;700;800&display=swap" rel="stylesheet" />
-
-  <link rel="stylesheet" href="css/style.css" />
-  <link rel="stylesheet" href="css/animations.css" />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
 
   <style>
     :root {
-      --font-display: 'Plus Jakarta Sans', sans-serif;
-      --bg-dark: #050814;
-      --bg-card: rgba(13, 20, 38, 0.7);
-      --border-subtle: rgba(255, 255, 255, 0.08);
-      --border-glow: rgba(0, 243, 255, 0.35);
-      --cyan-bright: #00f3ff;
-      --purple-bright: #a855f7;
-      --emerald-bright: #10b981;
-      --red-bright: #ef4444;
-      --amber-bright: #f59e0b;
+      --background: 220 36% 6%;
+      --foreground: 207 32% 93%;
+      --border: 216 27% 19%;
+      --input: 216 27% 19%;
+      --ring: 183 73% 45%;
+      --card: 220 32% 9%;
+      --card-foreground: 207 32% 93%;
+      --card-border: 216 27% 20%;
+      --popover: 220 32% 9%;
+      --popover-foreground: 207 32% 93%;
+      --popover-border: 216 27% 20%;
+      --primary: 183 73% 45%;
+      --primary-foreground: 220 36% 6%;
+      --secondary: 216 27% 15%;
+      --secondary-foreground: 207 32% 93%;
+      --muted: 216 27% 14%;
+      --muted-foreground: 215 18% 61%;
+      --accent: 40 89% 58%;
+      --accent-foreground: 220 36% 7%;
+      --destructive: 5 73% 57%;
+      --destructive-foreground: 207 32% 96%;
+      --app-font-sans: 'Manrope', sans-serif;
+      --app-font-mono: 'DM Mono', monospace;
+      --radius: 10px;
     }
 
-    body.landing-page-v2 {
-      background-color: var(--bg-dark);
-      color: #f1f5f9;
-      font-family: var(--font-display);
-      line-height: 1.65;
+    * {
+      box-sizing: border-box;
+      border-color: hsl(var(--border));
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: var(--app-font-sans);
+      background: hsl(var(--background));
+      color: hsl(var(--foreground));
+      margin: 0;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
       overflow-x: hidden;
     }
 
-    /* Ambient Glow Background */
-    .ambient-glow-top {
-      position: absolute;
-      top: -160px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 100vw;
-      max-width: 1300px;
-      height: 650px;
-      background: radial-gradient(ellipse at center, rgba(0, 243, 255, 0.12) 0%, rgba(168, 85, 247, 0.08) 40%, transparent 70%);
-      pointer-events: none;
-      z-index: 0;
+    button, a {
+      -webkit-tap-highlight-color: transparent;
     }
 
-    /* Top Sticky Header */
-    .top-header {
-      position: sticky;
-      top: 0;
-      z-index: 1000;
-      background: rgba(5, 8, 20, 0.85);
-      backdrop-filter: blur(20px);
-      border-bottom: 1px solid var(--border-subtle);
-      padding: 16px 48px;
+    .fraud-page {
+      min-height: 100vh;
+      overflow: hidden;
+      background: hsl(var(--background));
+    }
+
+    .mono {
+      font-family: var(--app-font-mono);
+    }
+
+    .eyebrow {
+      color: hsl(var(--primary));
+      font: 500 10px/1 var(--app-font-mono);
+      letter-spacing: .15em;
+      text-transform: uppercase;
+    }
+
+    .site-header {
+      position: fixed;
+      z-index: 30;
+      inset: 0 0 auto;
+      border-bottom: 1px solid hsl(var(--border) / .75);
+      background: hsl(var(--background) / .86);
+      backdrop-filter: blur(16px);
+    }
+
+    .header-inner {
+      max-width: 1240px;
+      height: 72px;
+      padding: 0 28px;
+      margin: auto;
       display: flex;
+      align-items: center;
       justify-content: space-between;
-      align-items: center;
     }
 
-    .brand-group {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .brand-icon {
-      font-size: 24px;
-      filter: drop-shadow(0 0 10px rgba(0, 243, 255, 0.5));
-    }
-
-    .brand-name {
-      font-size: 16px;
-      font-weight: 900;
-      letter-spacing: -0.02em;
-      color: #fff;
-    }
-
-    .brand-sub {
-      font-size: 10px;
-      font-family: var(--font-mono);
-      color: var(--text-muted);
-      letter-spacing: 0.05em;
-    }
-
-    .header-nav {
-      display: flex;
-      gap: 28px;
-      align-items: center;
-    }
-
-    .header-nav a {
-      color: var(--text-muted);
-      font-size: 13px;
-      font-weight: 700;
-      text-decoration: none;
-      transition: color 0.2s;
-    }
-
-    .header-nav a:hover {
-      color: var(--cyan-bright);
-    }
-
-    .btn-top-launch {
+    .brand {
       display: inline-flex;
       align-items: center;
       gap: 10px;
-      background: linear-gradient(135deg, #00f3ff, #3b82f6);
-      color: #030712;
-      font-weight: 900;
-      font-size: 13px;
-      padding: 10px 24px;
-      border-radius: 10px;
+      color: hsl(var(--foreground));
       text-decoration: none;
-      box-shadow: 0 0 28px rgba(0, 243, 255, 0.4);
-      border: 1px solid rgba(255, 255, 255, 0.3);
-      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
-    .btn-top-launch:hover {
-      transform: translateY(-2px) scale(1.02);
-      box-shadow: 0 0 40px rgba(0, 243, 255, 0.65);
-      color: #000;
+    .brand-mark {
+      width: 29px;
+      height: 29px;
+      display: grid;
+      place-items: center;
+      background: hsl(var(--primary));
+      color: hsl(var(--primary-foreground));
+      border-radius: 7px;
+      font: 700 15px/1 var(--app-font-mono);
     }
 
-    /* Layout Containers */
-    .container {
-      max-width: 1240px;
-      margin: 0 auto;
-      padding: 0 24px;
-      position: relative;
-      z-index: 1;
-    }
-
-    .hero-wrap {
-      padding: 70px 0 50px;
-      text-align: center;
-    }
-
-    .hero-tag {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 6px 18px;
-      border-radius: 40px;
-      background: rgba(0, 243, 255, 0.08);
-      border: 1px solid rgba(0, 243, 255, 0.35);
-      color: var(--cyan-bright);
-      font-size: 11px;
+    .brand-name {
+      font-size: 14px;
       font-weight: 800;
-      font-family: var(--font-mono);
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      margin-bottom: 24px;
+      letter-spacing: -.04em;
     }
 
-    .hero-h1 {
-      font-size: clamp(36px, 5.5vw, 64px);
-      font-weight: 900;
-      line-height: 1.12;
-      letter-spacing: -0.035em;
-      margin-bottom: 24px;
-      background: linear-gradient(180deg, #ffffff 40%, #94a3b8 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
+    .brand-name span {
+      color: hsl(var(--primary));
     }
 
-    .hero-desc {
-      font-size: clamp(16px, 1.8vw, 19px);
-      color: var(--text-muted);
-      max-width: 860px;
-      margin: 0 auto 36px;
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 26px;
+    }
+
+    .nav-links a {
+      color: hsl(var(--muted-foreground));
+      font-size: 12px;
+      font-weight: 700;
+      text-decoration: none;
+      transition: color .2s ease;
+    }
+
+    .nav-links a:hover {
+      color: hsl(var(--primary));
+    }
+
+    .header-cta {
+      border: 1px solid hsl(var(--primary));
+      color: hsl(var(--primary));
+      background: transparent;
+      padding: 10px 15px;
+      border-radius: 6px;
+      font: 700 11px var(--app-font-mono);
+      cursor: pointer;
+      text-decoration: none;
+      transition: background .2s ease, color .2s ease;
+    }
+
+    .header-cta:hover {
+      background: hsl(var(--primary));
+      color: hsl(var(--primary-foreground));
+    }
+
+    .menu-button {
+      display: none;
+      border: 0;
+      background: none;
+      color: hsl(var(--foreground));
+      cursor: pointer;
+    }
+
+    .hero {
+      position: relative;
+      padding: 170px 28px 110px;
+      max-width: 1240px;
+      min-height: 720px;
+      margin: auto;
+      display: grid;
+      grid-template-columns: 1.05fr .95fr;
+      gap: 70px;
+      align-items: center;
+    }
+
+    .hero:before {
+      content: '';
+      position: absolute;
+      z-index: -1;
+      width: 560px;
+      height: 560px;
+      right: -110px;
+      top: 80px;
+      border-radius: 50%;
+      background: radial-gradient(circle, hsl(var(--primary) / .12), transparent 66%);
+    }
+
+    .hero-copy {
+      max-width: 660px;
+    }
+
+    .hero h1 {
+      margin: 22px 0 24px;
+      max-width: 680px;
+      font-size: clamp(46px, 6.2vw, 82px);
+      line-height: .98;
+      letter-spacing: -.075em;
+      font-weight: 800;
+    }
+
+    .hero h1 em {
+      color: hsl(var(--primary));
+      font-style: normal;
+    }
+
+    .hero-lede {
+      max-width: 550px;
+      margin: 0;
+      color: hsl(var(--muted-foreground));
+      font-size: 17px;
       line-height: 1.7;
     }
 
-    .hero-ctas {
+    .hero-actions {
       display: flex;
-      justify-content: center;
-      gap: 16px;
+      gap: 12px;
+      align-items: center;
+      margin-top: 34px;
       flex-wrap: wrap;
-      margin-bottom: 60px;
     }
 
-    /* KPI Highlights Strip */
-    .stats-strip {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 18px;
-      margin-bottom: 80px;
+    .primary-button, .secondary-button {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      border-radius: 6px;
+      padding: 13px 17px;
+      font: 700 11px var(--app-font-mono);
+      cursor: pointer;
+      text-decoration: none;
+      transition: transform .2s ease, background .2s ease, border-color .2s ease;
     }
 
-    .stat-card {
-      background: var(--bg-card);
-      border: 1px solid var(--border-subtle);
-      border-radius: 16px;
-      padding: 22px;
-      text-align: left;
-      backdrop-filter: blur(16px);
-      transition: all 0.25s;
+    .primary-button {
+      color: hsl(var(--primary-foreground));
+      background: hsl(var(--primary));
+      border: 1px solid hsl(var(--primary));
     }
 
-    .stat-card:hover {
-      border-color: var(--border-glow);
-      transform: translateY(-3px);
+    .primary-button:hover {
+      transform: translateY(-2px);
+      background: hsl(183 72% 31%);
     }
 
-    .stat-num {
-      font-size: 32px;
-      font-weight: 900;
-      font-family: var(--font-mono);
-      color: #fff;
-      margin-top: 4px;
+    .secondary-button {
+      color: hsl(var(--foreground));
+      background: transparent;
+      border: 1px solid hsl(var(--border));
     }
 
-    /* Section Styles */
-    .section-wrap {
-      padding: 70px 0;
-      border-top: 1px solid rgba(255, 255, 255, 0.06);
+    .secondary-button:hover {
+      border-color: hsl(var(--primary));
+      transform: translateY(-2px);
     }
 
-    .sec-badge {
-      font-size: 11px;
+    .hero-note {
+      margin-top: 30px;
+      color: hsl(var(--muted-foreground));
+      font: 10px var(--app-font-mono);
+    }
+
+    .hero-note strong {
+      color: hsl(var(--foreground));
+      font-weight: 500;
+    }
+
+    .dashboard-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      margin-top: 17px;
+      color: hsl(var(--accent));
+      font: 700 11px var(--app-font-mono);
+      text-decoration: none;
+      border-bottom: 1px solid hsl(var(--accent) / .45);
+      padding-bottom: 5px;
+      transition: color .2s ease, border-color .2s ease, transform .2s ease;
+    }
+
+    .dashboard-cta:hover {
+      color: hsl(var(--foreground));
+      border-color: hsl(var(--foreground));
+      transform: translateX(3px);
+    }
+
+    .signal-board {
+      position: relative;
+      min-height: 415px;
+      border: 1px solid hsl(var(--border));
+      border-radius: 14px;
+      background: hsl(var(--card));
+      box-shadow: 0 20px 55px hsl(216 34% 14% / .08);
+      overflow: hidden;
+    }
+
+    .signal-board:before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: linear-gradient(hsl(var(--border) / .38) 1px, transparent 1px), linear-gradient(90deg, hsl(var(--border) / .38) 1px, transparent 1px);
+      background-size: 34px 34px;
+      mask-image: linear-gradient(to bottom, black, transparent 90%);
+    }
+
+    .board-top {
+      position: relative;
+      display: flex;
+      justify-content: space-between;
+      padding: 17px 20px;
+      border-bottom: 1px solid hsl(var(--border));
+      font-size: 10px;
       font-weight: 800;
-      font-family: var(--font-mono);
-      color: var(--cyan-bright);
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-      margin-bottom: 8px;
     }
 
-    .sec-heading {
-      font-size: clamp(26px, 3.8vw, 40px);
-      font-weight: 900;
-      letter-spacing: -0.025em;
-      color: #fff;
-      margin-bottom: 14px;
+    .live-status {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      color: hsl(var(--primary));
+      font: 10px var(--app-font-mono);
     }
 
-    .sec-sub {
-      color: var(--text-muted);
-      font-size: 15px;
-      max-width: 720px;
-      margin-bottom: 40px;
+    .live-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: hsl(var(--primary));
+      box-shadow: 0 0 0 4px hsl(var(--primary) / .12);
     }
 
-    /* 2-Column Comparison (Problem vs Solution) */
-    .two-col-grid {
+    .board-content {
+      position: relative;
+      padding: 27px 25px;
+    }
+
+    .score-ring {
+      width: 170px;
+      height: 170px;
+      margin: 3px auto 19px;
+      border-radius: 50%;
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
-      gap: 28px;
-    }
-
-    .comp-card {
-      border-radius: 20px;
-      padding: 36px;
-      background: var(--bg-card);
-      border: 1px solid var(--border-subtle);
-      backdrop-filter: blur(16px);
+      place-items: center;
+      background: conic-gradient(hsl(var(--primary)) 0 76%, hsl(var(--secondary)) 76% 100%);
       position: relative;
     }
 
-    .comp-card.problem {
-      border-top: 4px solid var(--red-bright);
+    .score-ring:after {
+      content: '';
+      position: absolute;
+      inset: 10px;
+      border-radius: 50%;
+      background: hsl(var(--card));
     }
 
-    .comp-card.solution {
-      border-top: 4px solid var(--cyan-bright);
-      background: linear-gradient(180deg, rgba(0, 243, 255, 0.04) 0%, rgba(13, 20, 38, 0.7) 100%);
+    .score-value {
+      position: relative;
+      z-index: 1;
+      text-align: center;
     }
 
-    .item-row {
+    .score-value strong {
+      display: block;
+      font: 500 42px/1 var(--app-font-mono);
+      letter-spacing: -.08em;
+    }
+
+    .score-value span {
+      display: block;
+      margin-top: 7px;
+      color: hsl(var(--muted-foreground));
+      font: 9px var(--app-font-mono);
+      text-transform: uppercase;
+      letter-spacing: .12em;
+    }
+
+    .board-foot {
       display: flex;
-      align-items: flex-start;
-      gap: 14px;
-      margin-bottom: 18px;
-    }
-
-    .item-icon {
-      font-size: 18px;
-      margin-top: 2px;
-      flex-shrink: 0;
-    }
-
-    /* Business ROI Cards Grid */
-    .roi-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      justify-content: center;
       gap: 20px;
+      color: hsl(var(--muted-foreground));
+      font: 10px var(--app-font-mono);
     }
 
-    .roi-card {
-      background: var(--bg-card);
-      border: 1px solid var(--border-subtle);
-      border-radius: 18px;
-      padding: 26px;
-      backdrop-filter: blur(16px);
-      transition: all 0.25s;
+    .board-foot b {
+      color: hsl(var(--foreground));
+      font-weight: 500;
     }
 
-    .roi-card:hover {
-      border-color: rgba(16, 185, 129, 0.4);
-      transform: translateY(-4px);
+    .section {
+      padding: 120px 28px;
     }
 
-    .roi-val {
-      font-size: 34px;
-      font-weight: 900;
-      color: var(--emerald-bright);
-      font-family: var(--font-mono);
-      margin-bottom: 8px;
+    .section-inner {
+      max-width: 1184px;
+      margin: auto;
     }
 
-    .roi-title {
-      font-size: 16px;
+    .section-header {
+      max-width: 700px;
+      margin-bottom: 55px;
+    }
+
+    .section-title {
+      margin: 16px 0 0;
+      font-size: clamp(31px, 4vw, 52px);
+      line-height: 1.05;
+      letter-spacing: -.06em;
       font-weight: 800;
-      color: #fff;
-      margin-bottom: 8px;
     }
 
-    .roi-desc {
+    .section-subtitle {
+      margin: 19px 0 0;
+      max-width: 630px;
+      color: hsl(var(--muted-foreground));
+      font-size: 15px;
+      line-height: 1.7;
+    }
+
+    .dark-section {
+      background: hsl(216 34% 6%);
+      color: hsl(210 33% 95%);
+      position: relative;
+    }
+
+    .dark-section .section-title {
+      color: hsl(210 33% 95%);
+    }
+
+    .dark-section .section-subtitle {
+      color: hsl(215 16% 68%);
+    }
+
+    .dark-section .eyebrow {
+      color: hsl(41 87% 57%);
+    }
+
+    .problem-grid {
+      display: grid;
+      grid-template-columns: 1.15fr .85fr;
+      gap: 90px;
+      align-items: start;
+    }
+
+    .problem-statement {
+      font-size: clamp(25px, 3.3vw, 42px);
+      line-height: 1.13;
+      letter-spacing: -.06em;
+      font-weight: 700;
+    }
+
+    .problem-statement span {
+      color: hsl(var(--primary));
+    }
+
+    .issue-list {
+      border-top: 1px solid hsl(var(--border));
+    }
+
+    .issue {
+      display: flex;
+      gap: 18px;
+      padding: 22px 0;
+      border-bottom: 1px solid hsl(var(--border));
+    }
+
+    .issue-no {
+      color: hsl(var(--primary));
+      font: 11px var(--app-font-mono);
+    }
+
+    .issue p {
+      margin: 0;
+      color: hsl(var(--muted-foreground));
       font-size: 13px;
-      color: var(--text-muted);
       line-height: 1.6;
     }
 
-    /* Tech Stack Badges */
-    .tech-grid {
+    .solution-layout {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 16px;
+      grid-template-columns: .72fr 1.28fr;
+      gap: 75px;
+      align-items: start;
     }
 
-    .tech-box {
-      background: var(--bg-card);
-      border: 1px solid var(--border-subtle);
-      border-radius: 14px;
-      padding: 20px;
-      display: flex;
-      align-items: center;
-      gap: 16px;
+    .solution-rail {
+      position: sticky;
+      top: 115px;
     }
 
-    .tech-logo {
-      font-size: 28px;
-      width: 48px;
-      height: 48px;
+    .solution-rail p {
+      color: hsl(var(--muted-foreground));
+      line-height: 1.7;
+      font-size: 14px;
+    }
+
+    .value-stack {
+      display: grid;
+      gap: 12px;
+    }
+
+    .value-card {
+      display: grid;
+      grid-template-columns: 52px 1fr 20px;
+      gap: 18px;
+      padding: 22px;
+      border: 1px solid hsl(var(--border));
       border-radius: 10px;
-      background: rgba(255, 255, 255, 0.05);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
+      background: hsl(var(--card));
+      align-items: start;
+      transition: transform .2s ease, border-color .2s ease;
     }
 
-    /* Footer */
-    .site-footer {
-      border-top: 1px solid var(--border-subtle);
-      padding: 48px 24px;
-      background: #02050e;
+    .value-card:hover {
+      transform: translateX(5px);
+      border-color: hsl(var(--primary));
+    }
+
+    .value-index {
+      color: hsl(var(--primary));
+      font: 11px var(--app-font-mono);
+    }
+
+    .value-card h3 {
+      margin: 0;
+      font-size: 16px;
+      letter-spacing: -.03em;
+    }
+
+    .value-card p {
+      margin: 8px 0 0;
+      color: hsl(var(--muted-foreground));
+      font-size: 12px;
+      line-height: 1.6;
+    }
+
+    .value-arrow {
+      color: hsl(var(--primary));
+      font-size: 16px;
+      margin-top: 4px;
+    }
+
+    .insights-wrap {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .insight-panel {
+      padding: 28px;
+      min-height: 240px;
+      border: 1px solid hsl(216 22% 25%);
+      background: hsl(216 30% 17%);
+      border-radius: 10px;
+    }
+
+    .insight-panel.large {
+      grid-row: span 2;
+      background: linear-gradient(145deg, hsl(183 72% 22%), hsl(216 30% 17%) 68%);
+    }
+
+    .insight-panel h3 {
+      margin: 34px 0 12px;
+      font-size: 19px;
+      letter-spacing: -.04em;
+    }
+
+    .insight-panel p {
+      margin: 0;
+      color: hsl(215 16% 72%);
       font-size: 13px;
-      color: var(--text-muted);
+      line-height: 1.7;
     }
 
-    .footer-content {
-      max-width: 1240px;
-      margin: 0 auto;
+    .insight-mark {
+      color: hsl(41 87% 57%);
+      font: 11px var(--app-font-mono);
+    }
+
+    .architecture-section {
+      background: hsl(216 34% 14%);
+      color: hsl(210 33% 95%);
+      padding-top: 115px;
+    }
+
+    .architecture-section .section-subtitle {
+      color: hsl(215 16% 68%);
+    }
+
+    .architecture-frame {
+      padding: 11px;
+      border: 1px solid hsl(216 22% 30%);
+      border-radius: 14px;
+      background: hsl(216 30% 11%);
+      box-shadow: 0 18px 60px hsl(216 34% 8% / .3);
+    }
+
+    .architecture-image-wrap {
+      overflow: auto;
+      border-radius: 8px;
+      background: #f4f5f5;
+    }
+
+    .architecture-image {
+      display: block;
+      width: 100%;
+      min-width: 850px;
+      height: auto;
+    }
+
+    .architecture-caption {
       display: flex;
       justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
       gap: 20px;
+      align-items: center;
+      padding: 17px 4px 3px;
+      color: hsl(215 16% 68%);
+      font: 10px var(--app-font-mono);
+    }
+
+    .architecture-caption span:last-child {
+      color: hsl(41 87% 57%);
+    }
+
+    .stack-section {
+      background: hsl(216 30% 10%);
+    }
+
+    .stack-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      border-top: 1px solid hsl(var(--border));
+      border-left: 1px solid hsl(var(--border));
+    }
+
+    .stack-item {
+      min-height: 150px;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 22px;
+      border-right: 1px solid hsl(var(--border));
+      border-bottom: 1px solid hsl(var(--border));
+      background: hsl(var(--background));
+      transition: background .2s ease;
+    }
+
+    .stack-item:hover {
+      background: hsl(var(--card));
+    }
+
+    .stack-image {
+      width: 38px;
+      height: 38px;
+      padding: 5px;
+      box-sizing: content-box;
+      object-fit: contain;
+      object-position: left center;
+      background: #f5f6f6;
+      border-radius: 6px;
+    }
+
+    .stack-image.wide {
+      width: 86px;
+    }
+
+    .stack-label {
+      display: flex;
+      justify-content: space-between;
+      align-items: end;
+      gap: 10px;
+    }
+
+    .stack-label strong {
+      font-size: 13px;
+      letter-spacing: -.02em;
+    }
+
+    .stack-label span {
+      color: hsl(var(--muted-foreground));
+      font: 9px var(--app-font-mono);
+      text-align: right;
+    }
+
+    .footer {
+      padding: 50px 28px 38px;
+      background: hsl(216 34% 14%);
+      color: hsl(210 33% 95%);
+    }
+
+    .footer-inner {
+      max-width: 1184px;
+      margin: auto;
+      display: flex;
+      justify-content: space-between;
+      gap: 40px;
+      align-items: end;
+    }
+
+    .footer p {
+      max-width: 430px;
+      margin: 16px 0 0;
+      color: hsl(215 16% 68%);
+      font-size: 12px;
+      line-height: 1.6;
+    }
+
+    .footer-meta {
+      color: hsl(215 16% 52%);
+      font: 10px var(--app-font-mono);
+      text-align: right;
+      line-height: 1.8;
+    }
+
+    .reveal {
+      animation: reveal-in .7s both;
+    }
+
+    .delay-1 {
+      animation-delay: .12s;
+    }
+
+    .delay-2 {
+      animation-delay: .22s;
+    }
+
+    @keyframes reveal-in {
+      from { opacity: 0; transform: translateY(14px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 850px) {
+      .header-inner { height: 64px; padding: 0 19px; }
+      .menu-button { display: block; }
+      .nav-links { display: none; position: absolute; top: 64px; left: 0; right: 0; padding: 18px 20px 22px; flex-direction: column; align-items: flex-start; gap: 19px; border-bottom: 1px solid hsl(var(--border)); background: hsl(var(--background) / .97); }
+      .nav-links.open { display: flex; }
+      .header-cta { display: none; }
+      .hero { padding: 132px 20px 78px; grid-template-columns: 1fr; gap: 48px; min-height: 0; }
+      .hero h1 { font-size: clamp(46px, 13vw, 70px); }
+      .hero-lede { font-size: 15px; }
+      .section { padding: 83px 20px; }
+      .problem-grid, .solution-layout { grid-template-columns: 1fr; gap: 42px; }
+      .solution-rail { position: static; }
+      .insights-wrap { grid-template-columns: 1fr; }
+      .insight-panel.large { grid-row: auto; }
+      .stack-grid { grid-template-columns: repeat(2, 1fr); }
+      .footer-inner { align-items: flex-start; flex-direction: column; }
+      .footer-meta { text-align: left; }
+    }
+
+    @media (max-width: 430px) {
+      .hero-actions { align-items: stretch; flex-direction: column; }
+      .primary-button, .secondary-button { justify-content: center; }
+      .score-ring { width: 145px; height: 145px; }
+      .value-card { grid-template-columns: 35px 1fr 16px; padding: 17px; gap: 10px; }
+      .stack-item { min-height: 133px; padding: 16px; }
+      .stack-label { display: block; }
+      .stack-label span { display: block; margin-top: 7px; text-align: left; }
     }
   </style>
 </head>
-<body class="landing-page-v2">
-  <div class="ambient-glow-top"></div>
+<body class="fraud-page">
 
-  <!-- Top Sticky Header -->
-  <header class="top-header">
-    <div class="brand-group">
-      <span class="brand-icon">🛡️</span>
-      <div>
-        <div class="brand-name">FINRA <span style="color:var(--cyan-bright);">AI</span> SURVEILLANCE</div>
-        <div class="brand-sub">ENTERPRISE REGULATORY SUITE</div>
-      </div>
+  <!-- Header -->
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="brand" href="#overview" data-testid="link-brand">
+        <span class="brand-mark">R</span>
+        <span class="brand-name">risk<span>signal</span></span>
+      </a>
+
+      <nav class="nav-links" id="primary-nav" aria-label="Primary navigation">
+        <a href="#overview" data-testid="link-nav-overview">Overview</a>
+        <a href="#problem" data-testid="link-nav-why-it-matters">Why it matters</a>
+        <a href="#architecture" data-testid="link-nav-architecture">Architecture</a>
+        <a href="#stack" data-testid="link-nav-stack">Stack</a>
+      </nav>
+
+      <!-- Top Right Button linking directly to Surveillance Dashboard -->
+      <a class="header-cta" href="index.html" data-testid="link-header-dashboard">Open dashboard</a>
+
+      <button class="menu-button" id="menu-btn" type="button" aria-label="Toggle navigation" data-testid="button-mobile-menu">
+        ☰
+      </button>
     </div>
-
-    <nav class="header-nav">
-      <a href="#problem-solution">Problem &amp; Solution</a>
-      <a href="#business-roi">Business Value</a>
-      <a href="#architecture">Architecture</a>
-      <a href="#ai-engine">3-Model AI</a>
-      <a href="#tech-stack">Tech Stack</a>
-    </nav>
-
-    <!-- Top-Right Glowing CTA Button -->
-    <a href="index.html" class="btn-top-launch" id="btn-top-launch-dashboard">
-      <span>⚡ LAUNCH LIVE DASHBOARD</span>
-      <span>➔</span>
-    </a>
   </header>
 
-  <!-- Main Content Wrap -->
-  <main class="container">
-    
-    <!-- Hero Section -->
-    <section class="hero-wrap">
-      <div class="hero-tag">
-        <span style="display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--cyan-bright);box-shadow:0 0 8px var(--cyan-bright);"></span>
-        MEDALLION LAKEHOUSE &bull; 0.9541 ROC-AUC BENCHMARK
+  <!-- Hero Section -->
+  <section class="hero" id="overview">
+    <div class="hero-copy reveal">
+      <div class="eyebrow">Realtime transaction intelligence / 01</div>
+      <h1>Find the signal<br />inside <em>every</em> transaction.</h1>
+      <p class="hero-lede">A cloud-native fraud detection pipeline for digital assets — built to turn live market and transaction data into decisions your team can inspect, trust, and act on.</p>
+      
+      <div class="hero-actions">
+        <a class="primary-button" href="#architecture" data-testid="link-hero-architecture">Explore the architecture &rarr;</a>
+        <a class="secondary-button" href="#stack" data-testid="link-hero-stack">See the stack &darr;</a>
       </div>
 
-      <h1 class="hero-h1">
-        Next-Generation Real-Time Financial<br />
-        Market Manipulation Surveillance
-      </h1>
+      <a class="dashboard-cta" href="index.html" data-testid="link-hero-dashboard">Open the live surveillance console &rarr;</a>
+      
+      <p class="hero-note"><strong>Designed for architecture review.</strong> Qualitative value, explicit components, no inflated claims.</p>
+    </div>
 
-      <p class="hero-desc">
-        An enterprise regulatory surveillance suite built for Tier-1 investment banks, broker-dealers, and digital asset exchanges. Ingests high-frequency market order streams via <strong>Azure Event Hubs &amp; Databricks Delta Lakehouse</strong>, executing parallel 3-Model AI scoring within a <strong>sub-0.5 millisecond SLA</strong>.
-      </p>
+    <div class="signal-board reveal delay-2" aria-label="Risk signal preview" data-testid="card-signal-preview">
+      <div class="board-top">
+        <span>TRANSACTION RISK ENGINE</span>
+        <span class="live-status"><span class="live-dot"></span> STREAMING</span>
+      </div>
+      <div class="board-content">
+        <div class="score-ring">
+          <div class="score-value"><strong>0.76</strong><span>risk score</span></div>
+        </div>
+        <div class="board-foot">
+          <span>MODEL <b>XGBOOST</b></span>
+          <span>LATENCY <b>LIVE</b></span>
+        </div>
+      </div>
+    </div>
+  </section>
 
-      <div class="hero-ctas">
-        <a href="index.html" class="btn-top-launch" style="padding:14px 34px;font-size:15px;">
-          <span>⚡ OPEN LIVE SURVEILLANCE RADAR</span>
-          <span>➔</span>
+  <!-- Problem Section -->
+  <section class="section" id="problem">
+    <div class="section-inner problem-grid">
+      <div>
+        <div class="eyebrow">The problem / 02</div>
+        <p class="problem-statement">Fraud is not a point-in-time event. It is a <span>sequence of signals</span> moving through a system.</p>
+      </div>
+      <div class="issue-list">
+        <div class="issue" data-testid="text-problem-01">
+          <span class="issue-no">01</span>
+          <p>Signals arrive from different places, at different speeds, with different context.</p>
+        </div>
+        <div class="issue" data-testid="text-problem-02">
+          <span class="issue-no">02</span>
+          <p>Rules alone miss novel patterns. A single model alone is difficult to explain.</p>
+        </div>
+        <div class="issue" data-testid="text-problem-03">
+          <span class="issue-no">03</span>
+          <p>Risk teams need an evidence trail — from raw event to feature, prediction, alert, and outcome.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Solution Section -->
+  <section class="section" id="solution">
+    <div class="section-inner solution-layout">
+      <div class="solution-rail">
+        <div class="eyebrow">The approach / 03</div>
+        <h2 class="section-title">A pipeline with a point of view.</h2>
+        <p>Every layer has a job. The result is not a black box — it is a traceable path from signal to decision, designed for the pace and ambiguity of digital-asset activity.</p>
+        <a class="secondary-button" href="#insights" data-testid="link-solution-insights">What this unlocks &rarr;</a>
+      </div>
+      <div class="value-stack">
+        <div class="value-card" data-testid="card-solution-01">
+          <span class="value-index">01</span>
+          <div>
+            <h3>Observe continuously</h3>
+            <p>Python and CoinMarketCap signals enter through Azure Event Hubs, creating a live operational picture instead of a delayed batch view.</p>
+          </div>
+          <span class="value-arrow">&rarr;</span>
+        </div>
+
+        <div class="value-card" data-testid="card-solution-02">
+          <span class="value-index">02</span>
+          <div>
+            <h3>Contextualize the event</h3>
+            <p>Structured Streaming and Spark feature engineering turn raw activity into reusable, governed features in Databricks Feature Store.</p>
+          </div>
+          <span class="value-arrow">&rarr;</span>
+        </div>
+
+        <div class="value-card" data-testid="card-solution-03">
+          <span class="value-index">03</span>
+          <div>
+            <h3>Challenge the pattern</h3>
+            <p>XGBoost, Isolation Forest, and Autoencoder models provide complementary lenses for known and emerging behavior.</p>
+          </div>
+          <span class="value-arrow">&rarr;</span>
+        </div>
+
+        <div class="value-card" data-testid="card-solution-04">
+          <span class="value-index">04</span>
+          <div>
+            <h3>Make risk actionable</h3>
+            <p>A model-serving API, rules, and thresholds translate scores into predictions, alerts, and Power BI-ready outputs.</p>
+          </div>
+          <span class="value-arrow">&rarr;</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Insights Section -->
+  <section class="section dark-section" id="insights">
+    <div class="section-inner">
+      <div class="section-header">
+        <div class="eyebrow">Business insights / 04</div>
+        <h2 class="section-title">Less noise.<br />More informed action.</h2>
+        <p class="section-subtitle">The value is operational clarity: seeing risk earlier, understanding why a signal matters, and giving technical and business teams a shared language.</p>
+      </div>
+      <div class="insights-wrap">
+        <div class="insight-panel large" data-testid="card-insight-visibility">
+          <span class="insight-mark">01 / VISIBILITY</span>
+          <h3>See the whole chain.</h3>
+          <p>Streaming ingestion, feature lineage, model outputs, and monitoring sit in one architecture. Teams can follow an alert back to the conditions that shaped it.</p>
+        </div>
+        <div class="insight-panel" data-testid="card-insight-adaptability">
+          <span class="insight-mark">02 / ADAPTABILITY</span>
+          <h3>Combine lenses, not guesses.</h3>
+          <p>Supervised, unsupervised, and reconstruction-based models create room to detect both familiar and unfamiliar behavior.</p>
+        </div>
+        <div class="insight-panel" data-testid="card-insight-governance">
+          <span class="insight-mark">03 / GOVERNANCE</span>
+          <h3>Keep decisions explainable.</h3>
+          <p>Rules and thresholds remain visible alongside model scores, making the system easier to review, tune, and operate responsibly.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Architecture Section -->
+  <section class="section architecture-section" id="architecture">
+    <div class="section-inner">
+      <div class="section-header">
+        <div class="eyebrow">System map / 05</div>
+        <h2 class="section-title">One flow, from source to signal.</h2>
+        <p class="section-subtitle">The actual reference architecture: real-time ingestion, feature engineering, machine learning, alerting, monitoring, and reporting connected as one reviewable path.</p>
+      </div>
+      <div class="architecture-frame" data-testid="figure-architecture">
+        <div class="architecture-image-wrap">
+          <img class="architecture-image" src="assets/Screenshot_2026-09-02_125128_1788354705743.png" alt="Reference architecture showing data sources, realtime ingestion, feature engineering, machine learning, fraud detection, alerting, monitoring, and Power BI outputs" data-testid="img-architecture-diagram" />
+        </div>
+        <div class="architecture-caption">
+          <span>REFERENCE ARCHITECTURE / TRANSACTION RISK PIPELINE</span>
+          <span>SCROLL TO INSPECT ON SMALL SCREENS</span>
+        </div>
+      </div>
+      <a class="secondary-button" href="assets/Screenshot_2026-09-02_125128_1788354705743.png" download="risk-signal-reference-architecture.png" style="margin-top: 18px; color: hsl(210 33% 95%); border-color: hsl(216 22% 30%);" data-testid="link-download-architecture">Download diagram &darr;</a>
+    </div>
+  </section>
+
+  <!-- Technology Stack Section -->
+  <section class="section stack-section" id="stack">
+    <div class="section-inner">
+      <div class="section-header">
+        <div class="eyebrow">Technology stack / 06</div>
+        <h2 class="section-title">Built on proven primitives.</h2>
+        <p class="section-subtitle">The platform combines managed cloud services with open machine-learning tooling — a pragmatic foundation for a system that needs to scale, evolve, and stay observable.</p>
+      </div>
+      <div class="stack-grid">
+        <div class="stack-item" data-testid="card-stack-0">
+          <img class="stack-image" src="assets/Azure_Logo_-_Colored_-_2048x2048_-_zonalogo.com_-_Copy_1788354186212.png" alt="Azure logo" />
+          <div class="stack-label"><strong>Azure</strong><span>CLOUD PLATFORM</span></div>
+        </div>
+
+        <div class="stack-item" data-testid="card-stack-1">
+          <img class="stack-image" src="assets/azure-databricks_-_Copy_1788354186217.png" alt="Databricks logo" />
+          <div class="stack-label"><strong>Databricks</strong><span>STREAMING + LAKEHOUSE</span></div>
+        </div>
+
+        <div class="stack-item" data-testid="card-stack-2">
+          <img class="stack-image" src="assets/terraform-icon-tew8r4clf5ocvoyj0o05j_1788354209043.webp" alt="Terraform logo" />
+          <div class="stack-label"><strong>Terraform</strong><span>INFRASTRUCTURE AS CODE</span></div>
+        </div>
+
+        <div class="stack-item" data-testid="card-stack-3">
+          <img class="stack-image" src="assets/images_1788354243254.png" alt="Event Hubs logo" />
+          <div class="stack-label"><strong>Event Hubs</strong><span>REALTIME INGESTION</span></div>
+        </div>
+
+        <div class="stack-item" data-testid="card-stack-4">
+          <img class="stack-image wide" src="assets/Apache_Spark_logo.svg_1788354447509.webp" alt="Apache Spark logo" />
+          <div class="stack-label"><strong>Apache Spark</strong><span>FEATURE ENGINEERING</span></div>
+        </div>
+
+        <div class="stack-item" data-testid="card-stack-5">
+          <img class="stack-image wide" src="assets/image_weuFlrw-thumbnail_webp-600x300_1788354317754.webp" alt="MLflow logo" />
+          <div class="stack-label"><strong>MLflow</strong><span>MODEL LIFECYCLE</span></div>
+        </div>
+
+        <div class="stack-item" data-testid="card-stack-6">
+          <img class="stack-image wide" src="assets/azure.microsoft_1788354472096.png" alt="Serverless Apps logo" />
+          <div class="stack-label"><strong>Serverless Apps</strong><span>ALERTING + API</span></div>
+        </div>
+
+        <div class="stack-item" data-testid="card-stack-7">
+          <img class="stack-image" src="assets/power-bi_1788354516846.png" alt="Power BI logo" />
+          <div class="stack-label"><strong>Power BI</strong><span>BUSINESS OUTPUTS</span></div>
+        </div>
+
+        <div class="stack-item" data-testid="card-stack-8">
+          <img class="stack-image wide" src="assets/coinmarketcap-agqsbhcdw5syj5e0mnvcli_1788354544114.webp" alt="CoinMarketCap logo" />
+          <div class="stack-label"><strong>CoinMarketCap</strong><span>MARKET SIGNALS</span></div>
+        </div>
+
+        <div class="stack-item" data-testid="card-stack-9">
+          <img class="stack-image wide" src="assets/azureloganalyticslogo_1788354637998.png" alt="Log Analytics logo" />
+          <div class="stack-label"><strong>Log Analytics</strong><span>OBSERVABILITY</span></div>
+        </div>
+
+        <div class="stack-item" data-testid="card-stack-10">
+          <img class="stack-image" src="assets/pngaaa.com-6373256_(1)_1788354676044.png" alt="Azure Monitor logo" />
+          <div class="stack-label"><strong>Azure Monitor</strong><span>HEALTH + ALERTS</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer" id="contact">
+    <div class="footer-inner">
+      <div>
+        <a class="brand" href="#overview" data-testid="link-brand-footer">
+          <span class="brand-mark">R</span>
+          <span class="brand-name">risk<span>signal</span></span>
         </a>
-        <a href="https://github.com/MuhammadWaizImran/Ai-Fraud-Detection-System" target="_blank" class="btn-cyber" style="padding:14px 28px;text-decoration:none;border-radius:10px;font-size:14px;font-weight:700;">
-          <span>⭐ GitHub Repository</span>
-        </a>
+        <p>A real-time fraud detection reference architecture for digital-asset transaction risk. Clear signals, responsible decisions.</p>
       </div>
-
-      <!-- Live Performance Stat Strip -->
-      <div class="stats-strip">
-        <div class="stat-card">
-          <div style="font-size:11px;font-weight:800;color:var(--text-muted);font-family:var(--font-mono);text-transform:uppercase;">Gold Table Dataset</div>
-          <div class="stat-num">150,000+</div>
-          <div style="font-size:12px;color:var(--cyan-bright);margin-top:2px;">Bronze ➔ Silver ➔ Gold Delta</div>
-        </div>
-
-        <div class="stat-card">
-          <div style="font-size:11px;font-weight:800;color:var(--text-muted);font-family:var(--font-mono);text-transform:uppercase;">Ensemble ROC-AUC</div>
-          <div class="stat-num" style="color:var(--emerald-bright);">0.9541</div>
-          <div style="font-size:12px;color:var(--emerald-bright);margin-top:2px;">88.20% Accuracy Benchmark</div>
-        </div>
-
-        <div class="stat-card">
-          <div style="font-size:11px;font-weight:800;color:var(--text-muted);font-family:var(--font-mono);text-transform:uppercase;">Inference Latency</div>
-          <div class="stat-num" style="color:var(--cyan-bright);">&lt; 0.50 ms</div>
-          <div style="font-size:12px;color:var(--cyan-bright);margin-top:2px;">Sub-2ms Pre-Settlement SLA</div>
-        </div>
-
-        <div class="stat-card">
-          <div style="font-size:11px;font-weight:800;color:var(--text-muted);font-family:var(--font-mono);text-transform:uppercase;">Captured Manipulations</div>
-          <div class="stat-num" style="color:var(--red-bright);">22,850+</div>
-          <div style="font-size:12px;color:var(--red-bright);margin-top:2px;">15.2% Calibrated Contamination</div>
-        </div>
-      </div>
-    </section>
-
-    <!-- SECTION 1: Problem Definition vs Our Solution -->
-    <section class="section-wrap" id="problem-solution">
-      <div class="sec-badge">CHALLENGE &amp; INNOVATION</div>
-      <h2 class="sec-heading">The Market Surveillance Problem vs. Our AI Solution</h2>
-      <p class="sec-sub">Why traditional regulatory systems fail in high-frequency trading environments and how our architecture redefines compliance.</p>
-
-      <div class="two-col-grid">
-        <!-- The Problem -->
-        <div class="comp-card problem">
-          <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px;">
-            <span style="font-size:24px;">❌</span>
-            <h3 style="font-size:20px;font-weight:900;color:var(--red-bright);">Legacy Surveillance Bottlenecks</h3>
-          </div>
-
-          <div class="item-row">
-            <span class="item-icon" style="color:var(--red-bright);">▪</span>
-            <div>
-              <strong style="color:#fff;">T+1 Overnight Batch Latency:</strong> Traditional compliance runs retrospective SQL jobs overnight. By the time abusive spoofing or wash trades are flagged, manipulative actors have already withdrawn capital.
-            </div>
-          </div>
-
-          <div class="item-row">
-            <span class="item-icon" style="color:var(--red-bright);">▪</span>
-            <div>
-              <strong style="color:#fff;">Crippling 70%+ False Positive Rates:</strong> Rigid, static threshold rules (e.g., volume > $1M) overwhelm human compliance officers with thousands of false alarms daily.
-            </div>
-          </div>
-
-          <div class="item-row">
-            <span class="item-icon" style="color:var(--red-bright);">▪</span>
-            <div>
-              <strong style="color:#fff;">Vulnerability to Zero-Day Modalities:</strong> Static rulebooks cannot detect novel, multi-account algorithmic collusion across fragmented liquidity venues.
-            </div>
-          </div>
-        </div>
-
-        <!-- The Solution -->
-        <div class="comp-card solution">
-          <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px;">
-            <span style="font-size:24px;">✅</span>
-            <h3 style="font-size:20px;font-weight:900;color:var(--cyan-bright);">Our Real-Time AI Lakehouse Solution</h3>
-          </div>
-
-          <div class="item-row">
-            <span class="item-icon" style="color:var(--cyan-bright);">▪</span>
-            <div>
-              <strong style="color:#fff;">Sub-0.5ms Pre-Settlement Interception:</strong> Ingests high-frequency Kafka events and scores transactions mathematically before trade matching and settlement occur.
-            </div>
-          </div>
-
-          <div class="item-row">
-            <span class="item-icon" style="color:var(--cyan-bright);">▪</span>
-            <div>
-              <strong style="color:#fff;">3-Model Hybrid Ensemble (0.9541 ROC-AUC):</strong> Combines Supervised XGBoost (60%), Unsupervised Isolation Forest (20%), and Neural Autoencoders (20%) to drastically reduce false alarms.
-            </div>
-          </div>
-
-          <div class="item-row">
-            <span class="item-icon" style="color:var(--cyan-bright);">▪</span>
-            <div>
-              <strong style="color:#fff;">Automated Incident Response:</strong> Connects directly to Azure Logic Apps for real-time webhooks, freezing flagged accounts and generating explainable TreeSHAP audit reports.
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- SECTION 2: Business Value & Executive ROI -->
-    <section class="section-wrap" id="business-roi">
-      <div class="sec-badge">BUSINESS VALUE &amp; ROI</div>
-      <h2 class="sec-heading">Quantifiable Business Impact for Financial Institutions</h2>
-      <p class="sec-sub">Deploying an autonomous AI surveillance Lakehouse delivers measurable operational savings and regulatory risk mitigation.</p>
-
-      <div class="roi-grid">
-        <div class="roi-card">
-          <div class="roi-val">99.4%</div>
-          <div class="roi-title">Latency Reduction</div>
-          <div class="roi-desc">Reduced fraud detection cycle from <strong>24 Hours (T+1 Batch)</strong> down to <strong>&lt; 0.50 Milliseconds</strong>, preventing market contagion in real time.</div>
-        </div>
-
-        <div class="roi-card">
-          <div class="roi-val">-68%</div>
-          <div class="roi-title">False Positive Overhead</div>
-          <div class="roi-desc">Multi-model consensus cuts noise by 68%, saving hundreds of analyst investigation hours and operational compliance costs.</div>
-        </div>
-
-        <div class="roi-card">
-          <div class="roi-val">$10M+</div>
-          <div class="roi-title">Regulatory Fine Avoidance</div>
-          <div class="roi-desc">Ensures proactive compliance with FINRA Rule 5210, SEC Rule 10b-5, and CFTC anti-spoofing enforcement standards.</div>
-        </div>
-
-        <div class="roi-card">
-          <div class="roi-val">100%</div>
-          <div class="roi-title">Explainable Auditing</div>
-          <div class="roi-desc">Every flagged alert includes instant TreeSHAP feature attributions and AI Copilot plain-language forensic narratives for regulatory reporting.</div>
-        </div>
-      </div>
-    </section>
-
-    <!-- SECTION 3: End-to-End System Architecture -->
-    <section class="section-wrap" id="architecture">
-      <div class="sec-badge">SYSTEM ARCHITECTURE</div>
-      <h2 class="sec-heading">Medallion Delta Lakehouse Architecture</h2>
-      <p class="sec-sub">Designed on Azure Databricks, Apache Spark Structured Streaming, and Delta Lake ACID transaction tables.</p>
-
-      <div class="glass-panel" style="padding:28px;text-align:center;background:rgba(10,16,30,0.85);margin-bottom:32px;">
-        <img src="docs/architecture_diagram.png" alt="End-to-End System Architecture Diagram" style="max-width:100%;border-radius:14px;border:1px solid rgba(255,255,255,0.1);box-shadow:0 20px 50px rgba(0,0,0,0.6);" onerror="this.src='../docs/architecture_diagram.png';" />
-      </div>
-
-      <div class="two-col-grid">
-        <div class="stat-box" style="padding:24px;">
-          <h4 style="font-size:16px;font-weight:800;color:var(--cyan-bright);margin-bottom:8px;">1. Ingestion &amp; Lakehouse Storage</h4>
-          <p style="font-size:13px;color:var(--text-muted);">
-            High-throughput market order events are streamed into <strong>Azure Event Hubs</strong>. Databricks Spark Structured Streaming ingests raw payloads into <strong>Bronze Delta</strong>, deduplicates and validates schema into <strong>Silver Delta</strong>, and computes rolling window microstructural features into <strong>Gold Delta (150,000+ Vectors)</strong>.
-          </p>
-        </div>
-
-        <div class="stat-box" style="padding:24px;">
-          <h4 style="font-size:16px;font-weight:800;color:var(--purple-bright);margin-bottom:8px;">2. AI Scoring &amp; Real-Time Delivery</h4>
-          <p style="font-size:13px;color:var(--text-muted);">
-            Transactions are normalized via StandardScaler and evaluated in parallel across XGBoost, Isolation Forest, and PyTorch Autoencoders. High-risk transactions (Score &ge; 0.85) trigger <strong>Azure Logic Apps webhooks</strong> and pulse the <strong>3D Three.js Web Command Center</strong>.
-          </p>
-        </div>
-      </div>
-    </section>
-
-    <!-- SECTION 4: 3-Model AI Hybrid Ensemble -->
-    <section class="section-wrap" id="ai-engine">
-      <div class="sec-badge">ARTIFICIAL INTELLIGENCE</div>
-      <h2 class="sec-heading">3-Model Hybrid Ensemble &bull; Mathematical Rigor</h2>
-      <p class="sec-sub">A layered defense strategy that covers supervised classification, unsupervised space partitioning, and zero-day neural anomaly detection.</p>
-
-      <div class="feature-grid-3col">
-        <div class="feature-card" style="border-top:3px solid var(--cyan-bright);">
-          <div style="font-size:28px;margin-bottom:12px;">🥇</div>
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
-            <h4 style="color:#fff;font-size:18px;font-weight:900;">XGBoost Classifier</h4>
-            <span class="panel-badge" style="background:rgba(0,243,255,0.15);color:var(--cyan-bright);">60% WEIGHT</span>
-          </div>
-          <p style="font-size:13px;color:var(--text-muted);margin-bottom:16px;">
-            Supervised 300-tree gradient boosted ensemble. Captures complex non-linear combinations of known manipulative attack modalities.
-          </p>
-          <div style="font-family:var(--font-mono);font-size:12px;display:flex;flex-direction:column;gap:6px;border-top:1px solid var(--border-subtle);padding-top:12px;">
-            <div style="display:flex;justify-content:space-between;"><span style="color:var(--text-muted);">ROC-AUC:</span><strong style="color:var(--emerald-bright);">0.9541</strong></div>
-            <div style="display:flex;justify-content:space-between;"><span style="color:var(--text-muted);">Accuracy:</span><strong style="color:#fff;">88.20%</strong></div>
-            <div style="display:flex;justify-content:space-between;"><span style="color:var(--text-muted);">Latency:</span><strong style="color:var(--cyan-bright);">0.28 ms</strong></div>
-          </div>
-        </div>
-
-        <div class="feature-card" style="border-top:3px solid var(--purple-bright);">
-          <div style="font-size:28px;margin-bottom:12px;">🌲</div>
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
-            <h4 style="color:#fff;font-size:18px;font-weight:900;">Isolation Forest</h4>
-            <span class="panel-badge" style="background:rgba(168,85,247,0.15);color:var(--purple-bright);">20% WEIGHT</span>
-          </div>
-          <p style="font-size:13px;color:var(--text-muted);margin-bottom:16px;">
-            Unsupervised space partitioning with 200 partition trees. Isolates extreme multi-dimensional outlier orders without relying on labels.
-          </p>
-          <div style="font-family:var(--font-mono);font-size:12px;display:flex;flex-direction:column;gap:6px;border-top:1px solid var(--border-subtle);padding-top:12px;">
-            <div style="display:flex;justify-content:space-between;"><span style="color:var(--text-muted);">Method:</span><strong style="color:var(--purple-bright);">Tree Path Depth</strong></div>
-            <div style="display:flex;justify-content:space-between;"><span style="color:var(--text-muted);">Contamination:</span><strong style="color:#fff;">15.0% Baseline</strong></div>
-            <div style="display:flex;justify-content:space-between;"><span style="color:var(--text-muted);">Latency:</span><strong style="color:var(--cyan-bright);">0.08 ms</strong></div>
-          </div>
-        </div>
-
-        <div class="feature-card" style="border-top:3px solid var(--red-bright);">
-          <div style="font-size:28px;margin-bottom:12px;">🧠</div>
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
-            <h4 style="color:#fff;font-size:18px;font-weight:900;">Deep Autoencoder</h4>
-            <span class="panel-badge" style="background:rgba(239,68,68,0.15);color:var(--red-bright);">20% WEIGHT</span>
-          </div>
-          <p style="font-size:13px;color:var(--text-muted);margin-bottom:16px;">
-            10 ➔ 7 ➔ 4 ➔ 7 ➔ 10 bottleneck neural network. Reconstructs normal flow; flags zero-day manipulative algorithms when MSE &gt; 0.0013.
-          </p>
-          <div style="font-family:var(--font-mono);font-size:12px;display:flex;flex-direction:column;gap:6px;border-top:1px solid var(--border-subtle);padding-top:12px;">
-            <div style="display:flex;justify-content:space-between;"><span style="color:var(--text-muted);">Threshold:</span><strong style="color:var(--red-bright);">MSE &gt; 0.0013</strong></div>
-            <div style="display:flex;justify-content:space-between;"><span style="color:var(--text-muted);">Target:</span><strong style="color:#fff;">Zero-Day Anomalies</strong></div>
-            <div style="display:flex;justify-content:space-between;"><span style="color:var(--text-muted);">Latency:</span><strong style="color:var(--cyan-bright);">0.06 ms</strong></div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- SECTION 5: Enterprise Tech Stack -->
-    <section class="section-wrap" id="tech-stack">
-      <div class="sec-badge">TECHNOLOGY STACK</div>
-      <h2 class="sec-heading">Engineered with Industry Standard Technologies</h2>
-      <p class="sec-sub">Built entirely on enterprise cloud infrastructure, distributed data frameworks, and modern WebGL interfaces.</p>
-
-      <div class="tech-grid">
-        <div class="tech-box">
-          <div class="tech-logo">⚡</div>
-          <div>
-            <div style="font-weight:800;color:#fff;font-size:15px;">Azure Databricks</div>
-            <div style="font-size:12px;color:var(--text-muted);">Apache Spark Structured Streaming engine</div>
-          </div>
-        </div>
-
-        <div class="tech-box">
-          <div class="tech-logo">🥇</div>
-          <div>
-            <div style="font-weight:800;color:#fff;font-size:15px;">Delta Lake Lakehouse</div>
-            <div style="font-size:12px;color:var(--text-muted);">Bronze, Silver, Gold Medallion ACID storage</div>
-          </div>
-        </div>
-
-        <div class="tech-box">
-          <div class="tech-logo">📡</div>
-          <div>
-            <div style="font-weight:800;color:#fff;font-size:15px;">Azure Event Hubs</div>
-            <div style="font-size:12px;color:var(--text-muted);">Kafka-compatible high-throughput event streaming</div>
-          </div>
-        </div>
-
-        <div class="tech-box">
-          <div class="tech-logo">🧪</div>
-          <div>
-            <div style="font-weight:800;color:#fff;font-size:15px;">MLflow Registry</div>
-            <div style="font-size:12px;color:var(--text-muted);">Model tracking, versioning, and artifact governance</div>
-          </div>
-        </div>
-
-        <div class="tech-box">
-          <div class="tech-logo">🚨</div>
-          <div>
-            <div style="font-weight:800;color:#fff;font-size:15px;">Azure Logic Apps</div>
-            <div style="font-size:12px;color:var(--text-muted);">Automated regulatory incident webhooks &amp; alerts</div>
-          </div>
-        </div>
-
-        <div class="tech-box">
-          <div class="tech-logo">🌐</div>
-          <div>
-            <div style="font-weight:800;color:#fff;font-size:15px;">Three.js WebGL Engine</div>
-            <div style="font-size:12px;color:var(--text-muted);">3D interactive rotating globe &amp; hub threat alarms</div>
-          </div>
-        </div>
-
-        <div class="tech-box">
-          <div class="tech-logo">🍩</div>
-          <div>
-            <div style="font-weight:800;color:#fff;font-size:15px;">Chart.js &amp; TreeSHAP</div>
-            <div style="font-size:12px;color:var(--text-muted);">Real-time circular force weights &amp; stream curves</div>
-          </div>
-        </div>
-
-        <div class="tech-box">
-          <div class="tech-logo">🤖</div>
-          <div>
-            <div style="font-weight:800;color:#fff;font-size:15px;">AI Compliance Copilot</div>
-            <div style="font-size:12px;color:var(--text-muted);">In-browser automated trade forensics assistant</div>
-          </div>
-        </div>
-
-        <div class="tech-box">
-          <div class="tech-logo">📈</div>
-          <div>
-            <div style="font-weight:800;color:#fff;font-size:15px;">Power BI Analytics</div>
-            <div style="font-size:12px;color:var(--text-muted);">Executive reporting and multi-page lakehouse BI</div>
-          </div>
-        </div>
-
-        <div class="tech-box">
-          <div class="tech-logo">🏗️</div>
-          <div>
-            <div style="font-weight:800;color:#fff;font-size:15px;">Terraform IaC</div>
-            <div style="font-size:12px;color:var(--text-muted);">Reproducible automated Azure infrastructure</div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Bottom Launch Banner -->
-    <section style="padding:60px 0;text-align:center;">
-      <div class="glass-panel" style="background:linear-gradient(135deg, rgba(0, 243, 255, 0.08), rgba(168, 85, 247, 0.08));border-color:rgba(0, 243, 255, 0.35);padding:48px 24px;border-radius:24px;">
-        <h3 style="font-size:30px;font-weight:900;color:#fff;margin-bottom:12px;">Ready to Experience Live Regulatory Surveillance?</h3>
-        <p style="color:var(--text-muted);font-size:15px;max-width:650px;margin:0 auto 28px;">
-          Access the real-time 3D cyber surveillance radar with persistent order ledgers, dynamic TreeSHAP force rings, and embedded AI Copilot.
-        </p>
-        <a href="index.html" class="btn-top-launch" style="padding:16px 40px;font-size:16px;">
-          <span>⚡ LAUNCH LIVE SURVEILLANCE RADAR</span>
-          <span>➔</span>
-        </a>
-      </div>
-    </section>
-
-  </main>
-
-  <!-- Site Footer -->
-  <footer class="site-footer">
-    <div class="footer-content">
-      <div style="display:flex;align-items:center;gap:12px;">
-        <span style="font-size:22px;">🛡️</span>
-        <div>
-          <div style="font-weight:900;color:#fff;">FINRA AI Fraud Detection Platform</div>
-          <div style="font-size:11px;color:var(--text-muted);">Regulatory Grade High-Frequency Surveillance Suite</div>
-        </div>
-      </div>
-
-      <div style="display:flex;gap:24px;align-items:center;font-weight:700;">
-        <a href="index.html" style="color:var(--cyan-bright);text-decoration:none;">⚡ Live Dashboard</a>
-        <a href="https://github.com/MuhammadWaizImran/Ai-Fraud-Detection-System" target="_blank" style="color:var(--text-muted);text-decoration:none;">GitHub Repository</a>
-        <span style="color:var(--text-dim);font-weight:400;">&copy; 2026 Developed under MIT License.</span>
+      <div class="footer-meta">
+        <div>RISK INTELLIGENCE / CLOUD NATIVE</div>
+        <div>ARCHITECTURE REVIEW EDITION</div>
+        <a href="#overview" style="color: hsl(41 87% 57%); text-decoration: none;" data-testid="link-back-top">Back to top &uarr;</a>
       </div>
     </div>
   </footer>
+
+  <script>
+    // Mobile menu toggle
+    const menuBtn = document.getElementById('menu-btn');
+    const primaryNav = document.getElementById('primary-nav');
+    if (menuBtn && primaryNav) {
+      menuBtn.addEventListener('click', () => {
+        primaryNav.classList.toggle('open');
+      });
+      primaryNav.querySelectorAll('a').forEach(a => {
+        a.addEventListener('click', () => {
+          primaryNav.classList.remove('open');
+        });
+      });
+    }
+  </script>
 </body>
 </html>
