@@ -5,7 +5,13 @@
 [![ROC-AUC](https://img.shields.io/badge/Ensemble%20ROC--AUC-0.9541-brightgreen.svg)](models/model_metadata.json)
 [![Accuracy](https://img.shields.io/badge/Classification%20Accuracy-88.20%25-green.svg)](models/model_metadata.json)
 [![Sub-0.5ms Latency](https://img.shields.io/badge/Inference%20SLA-%3C0.5ms-cyan.svg)](models/model_metadata.json)
-[![Three.js](https://img.shields.io/badge/3D%20Engine-Three.js-black.svg?logo=three.js&logoColor=white)](https://threejs.org/)
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FMuhammadWaizImran%2FAi-Fraud-Detection-System)
+
+---
+
+### 🌐 Live Cloud Surveillance Web Application:
+👉 **[Deploy / Launch Instantly on Vercel (1-Click)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FMuhammadWaizImran%2FAi-Fraud-Detection-System)**  
+👉 **[GitHub Pages Live URL](https://muhammadwaizimran.github.io/Ai-Fraud-Detection-System/)**
 
 ---
 
