@@ -3,10 +3,9 @@ START_EVERYTHING.py
 ====================
 ONE-CLICK LAUNCHER — Starts the entire FINRA AI Fraud Detection Platform
 Runs all components in parallel:
-  1. Live Order Simulator (CoinGecko real prices → Event Hubs)
-  2. Real-Time AI Scoring Engine (3-Model Ensemble → live_feed.jsonl)
-  3. Streamlit Dashboard (http://localhost:8501)
-  4. Opens browser automatically
+  1. Real-Time AI Scoring Engine (3-Model Ensemble → live_feed.jsonl)
+  2. 3D Web Surveillance Application & Landing Page (http://localhost:3000)
+  3. Opens browser automatically
 """
 
 import os, sys, time, subprocess, threading, webbrowser
@@ -25,7 +24,7 @@ BANNER = """
          End-to-End Real-Time Live Launch                       
 ================================================================
   Architecture:                                                 
-  CoinGecko -> Event Hubs -> AI Engine -> Dashboard             
+  Market Streams -> Event Hubs -> AI Engine -> 3D Radar Console 
                                                                 
   Models: XGBoost (60%) + IsoForest (20%) + Autoencoder (20%)   
   Latency: < 2ms per order                                      
@@ -60,7 +59,6 @@ def open_browser(delay=6):
     print("\n  Opening applications in browser...")
     try:
         webbrowser.open("http://localhost:3000")
-        webbrowser.open("http://localhost:8501")
     except Exception:
         pass
 
@@ -110,33 +108,7 @@ else:
     print("  [OK] Real-time order generation is active inside AI Scoring Engine.")
 
 print("\n" + "=" * 65)
-print("[STEP 3] Starting Streamlit Dashboard (Port 8501)...")
-print("=" * 65)
-
-# Kill any existing streamlit
-subprocess.run("taskkill /f /im streamlit.exe 2>nul", shell=True, capture_output=True)
-time.sleep(1)
-
-dash_proc = subprocess.Popen(
-    [sys.executable, "-m", "streamlit", "run", "dashboard/app.py",
-     "--server.port=8501", "--server.headless=true",
-     "--server.fileWatcherType=none",
-     "--theme.base=dark"],
-    cwd=BASE_DIR,
-    stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
-    text=True, encoding="utf-8", errors="replace"
-)
-processes.append(("Dashboard", dash_proc))
-
-def stream_dash():
-    for line in dash_proc.stdout:
-        line = line.rstrip()
-        if line:
-            print(f"  [DASHBOARD] {line}")
-threading.Thread(target=stream_dash, daemon=True).start()
-
-print("\n" + "=" * 65)
-print("[STEP 4] Starting 3D Web Application & Landing Page (Port 3000)...")
+print("[STEP 3] Starting 3D Web Application & Landing Page (Port 3000)...")
 print("=" * 65)
 web_proc = subprocess.Popen(
     [sys.executable, "-m", "http.server", "3000", "--directory", "web"],
@@ -154,19 +126,18 @@ def stream_web():
 threading.Thread(target=stream_web, daemon=True).start()
 
 # Auto-open browser
-threading.Thread(target=open_browser, args=(7,), daemon=True).start()
+threading.Thread(target=open_browser, args=(5,), daemon=True).start()
 
 print("""
 ================================================================
-                   ALL SYSTEMS LIVE!                            
+              FINRA AI PLATFORM ONLINE & STREAMING!             
 ================================================================
                                                                 
   1. HOMEPAGE:          http://localhost:3000                   
-  2. 3D LIVE CONSOLE:   http://localhost:3000/dashboard.html    
-  3. STREAMLIT METRICS: http://localhost:8501                   
+  2. 3D LIVE RADAR:     http://localhost:3000/dashboard.html    
                                                                 
   Real-time AI Scoring: XGBoost + IsoForest + Autoencoder       
-  Live feed syncing to dashboard and web data folders           
+  Live telemetry syncing to web data stream                     
                                                                 
   Press Ctrl+C to stop all processes                            
 ================================================================

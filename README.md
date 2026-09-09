@@ -10,7 +10,7 @@
 [![Inference SLA](https://img.shields.io/badge/Inference_SLA-%3C2ms_Sub--Millisecond-f59e0b?style=for-the-badge&logo=fastapi&logoColor=white)](#performance-benchmarks)
 [![Regulatory Compliance](https://img.shields.io/badge/FINRA_Rule_Compliance-2010_%7C_5210_%7C_6140-8b5cf6?style=for-the-badge&logo=apachespark&logoColor=white)](#regulatory-mandate)
 
-[Live Web Platform](http://localhost:3000) • [3D Radar Console](http://localhost:3000/dashboard.html) • [Streamlit Forensic Portal](http://localhost:8501) • [Documentation Suite](docs/)
+[Live Web Platform](http://localhost:3000) • [3D Radar Console](http://localhost:3000/dashboard.html) • [Crypto Market Terminal](http://localhost:3000/crypto_market.html) • [Documentation Suite](docs/)
 
 </div>
 
@@ -49,7 +49,7 @@ The platform is designed around a fault-tolerant, high-throughput financial tele
   ┌──────────────────────────┐           ┌───────────────────────┐           ┌───────────────────────┐
   │  Surveillance Portals    │           │  3-Model AI Ensemble  │           │  TreeSHAP Attributions│
   │ • 3D Cyber Radar Console │ <──────── │ • Supervised XGBoost  │ <──────── │ • Order Cancel Ratios │
-  │ • Streamlit Forensics    │           │ • Isolation Forest    │           │ • Bid/Ask Imbalance   │
+  │ • Crypto Market Terminal │           │ • Isolation Forest    │           │ • Bid/Ask Imbalance   │
   │ • Power BI DirectQuery   │           │ • Deep Autoencoder    │           │ • Velocity of Quoting │
   └──────────────────────────┘           └───────────────────────┘           └───────────────────────┘
 ```
@@ -118,10 +118,10 @@ The system provides three complementary supervisory interfaces designed for dist
 * **Continuous Audit Ledger**: Streaming sub-2ms transaction log with multi-dimensional verdict filters (`ALL`, `SAFE`, `SUSPICIOUS`, `FRAUD`).
 * **Visual & Audio Threat Alarm**: Instant chromatic strobe alerts triggered when high-probability manipulative attacks are intercepted.
 
-### 2. 📊 Streamlit Supervisory Forensic Portal (`dashboard/app.py`)
-* **Entity Risk Profiling**: Instant dossier lookup for institutional market makers and liquidity provider accounts.
-* **Cross-Symbol Risk Matrix**: Comparative violation heatmaps across BTC, ETH, SOL, XRP, and multi-asset equities.
-* **Forensic Order Book Replay**: Frame-by-frame microscopic trade sequence playback for court-admissible audit reports.
+### 2. 💹 Crypto Market Telemetry Terminal (`web/crypto_market.html`)
+* **Real-Time Order Book Depth**: Dynamic telemetry ticker tracking prices, spreads, and order book velocity across top digital assets.
+* **Microstructural Anomaly Indicators**: Instantaneous buy/sell pressure imbalance calculation and rapid cancellation rate visualization.
+* **Cross-Market Surveillance**: Live cross-currency correlation matrices detecting distributed pump-and-dump coordination.
 
 ### 3. 📈 Power BI Lakehouse Executive Intelligence (`powerbi/`)
 * **DirectQuery Delta Lake Connector**: Direct connectivity to the Azure Databricks Gold Feature Store.
@@ -133,13 +133,16 @@ The system provides three complementary supervisory interfaces designed for dist
 
 ```
 ├── README.md                              # Institutional Executive Pitch & Technical Blueprint
-├── START_EVERYTHING.py                    # 1-Click Unified Orchestrator (Engines + Web + Dashboard)
+├── START_EVERYTHING.py                    # 1-Click Unified Launcher (AI Engine + Web Console)
 ├── realtime_scoring_engine.py             # Core Sub-Millisecond AI Scoring Engine (<2ms SLA)
 ├── train_and_deploy_models.py             # Automated AI Model Training & Registry Pipeline
 ├── requirements.txt                       # Production Dependencies
 ├── vercel.json                            # Cloud Web Deployment Router
 ├── .env.example                           # Safe Template for Azure Credentials & API Endpoints
 ├── .gitignore                             # Hardened Security Guard (Prevents Credential & State Leaks)
+│
+├── api/                                   # ⚡ Vercel Serverless Edge Functions
+│   └── feed.js                            # Edge Pipeline Real-Time Scored Order Generator
 │
 ├── docs/                                  # 📚 Complete FINRA Documentation Suite
 │   ├── FINRA_AI_SURVEILLANCE_MASTER_MANUAL.md  # 360° Technical Architecture Manual
@@ -165,11 +168,6 @@ The system provides three complementary supervisory interfaces designed for dist
 │   ├── css/                               # Cyberpunk Glassmorphic Design System
 │   ├── js/                                # Three.js, Chart.js, and Stream Engine Integrations
 │   └── data/                              # Gold Table Samples & Real-Time Sync Feeds
-│
-├── dashboard/                             # 📊 Streamlit Forensic Auditing Portal
-│   ├── app.py                             # Live Analytical & Entity Profiling Application
-│   ├── live_feed.jsonl                    # Local Streaming Buffer
-│   └── live_stats.json                    # Rolling Real-Time Performance Telemetry
 │
 ├── notebooks/                             # ⚡ Azure Databricks Spark Production Notebooks
 │   ├── 01_bronze_ingestion.py             # Event Hubs to Delta Lake Streaming Ingestion
@@ -211,7 +209,7 @@ pip install -r requirements.txt
 ```
 
 ### 2. Launch Entire Surveillance Suite
-Start the Real-Time AI Scoring Engine, the 3D Web Radar Console, and the Streamlit Supervisory Forensics Portal simultaneously with a single command:
+Start the Real-Time AI Scoring Engine and the High-Performance Web Surveillance Suite simultaneously with a single command:
 ```bash
 python START_EVERYTHING.py
 ```
@@ -219,8 +217,8 @@ python START_EVERYTHING.py
 This will automatically initialize:
 * 🏛️ **FINRA Landing Page**: [http://localhost:3000](http://localhost:3000)
 * ⚡ **3D Surveillance Radar Console**: [http://localhost:3000/dashboard.html](http://localhost:3000/dashboard.html)
-* 📊 **Streamlit Metrics & Audit Portal**: [http://localhost:8501](http://localhost:8501)
-* 🤖 **AI Scoring Engine**: Background multi-threaded inference sync across ports.
+* 📈 **Live Crypto Telemetry Terminal**: [http://localhost:3000/crypto_market.html](http://localhost:3000/crypto_market.html)
+* 🤖 **AI Scoring Engine**: Background multi-threaded inference streaming real-time lakehouse telemetry.
 
 ---
 

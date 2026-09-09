@@ -119,7 +119,7 @@ Jab aap website open karte hain (`http://localhost:3000/index.html`), aapko samn
 
 ## 📊 6. Power BI aur Reporting Side Par Kya Hai?
 
-Auditers aur high-level executives ke liye platform ke sath Power BI templates aur Streamlit dashboards shamil hain:
+Auditers aur high-level executives ke liye platform ke sath Power BI templates aur Web 3D Surveillance dashboards shamil hain:
 - **Trader Risk Exposure**: Kaunse traders consistently mashkook hain aur watchlist par hone chahiyein.
 - **Loss Prevention Calculator**: System ne market ka kitna lakh/crore rupay ka nuqsan hone se bachaya.
 - **Regulatory Compliance Audit Trail**: Har pakray gaye fraud ka legal evidence record jo court ya regulator ko pesh kiya ja sakta hai.

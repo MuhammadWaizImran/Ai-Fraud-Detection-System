@@ -32,7 +32,7 @@
 8. [Benchmarking & Model Performance Metrics](#8-benchmarking--model-performance-metrics)
 9. [3D Cyber Web Command Center & UI Architecture](#9-3d-cyber-web-command-center--ui-architecture)
 10. [Autonomous AI Compliance Copilot Chatbot](#10-autonomous-ai-compliance-copilot-chatbot)
-11. [Enterprise Business Intelligence (Power BI & Streamlit)](#11-enterprise-business-intelligence-power-bi--streamlit)
+11. [Enterprise Business Intelligence (Power BI & Live Telemetry)](#11-enterprise-business-intelligence-power-bi--live-telemetry)
 12. [Cloud Infrastructure & Azure Terraform Deployment](#12-cloud-infrastructure--azure-terraform-deployment)
 13. [Complete Repository Structure & File Index](#13-complete-repository-structure--file-index)
 14. [Operational Control Scripts & Step-by-Step Runbook](#14-operational-control-scripts--step-by-step-runbook)
@@ -136,7 +136,7 @@ The platform monitors, categorizes, and mitigates 5 primary market manipulation 
 │   • Persistent Historical Order Ledger (Filterable, Searchable across 150k+ records)    │
 │   • Autonomous AI Compliance Copilot Chatbot (Instant forensic audit memorandums)       │
 │   • Enterprise Power BI Reporting Suite (Star-schema models & executive DAX metrics)    │
-│   • Streamlit 6-Page Investigation Station (Threshold tuning & drift monitoring)        │
+│   • Web Live Crypto Telemetry Terminal (High-frequency multi-token streaming)           │
 └─────────────────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -364,7 +364,7 @@ Integrated into the web console is an in-browser conversational forensic assista
 
 ---
 
-## 11. Enterprise Business Intelligence (Power BI & Streamlit)
+## 11. Enterprise Business Intelligence (Power BI & Live Telemetry)
 
 ### Power BI Analytics Suite (`powerbi/`)
 - **Data Modeling**: Normalized Star-Schema joining `gold.trade_features`, `dim_traders`, and `dim_assets`.
@@ -374,8 +374,8 @@ Integrated into the web console is an in-browser conversational forensic assista
   - `Trader Exposure Risk Matrix`
 - **Guides**: Complete interactive setup guide in `powerbi/POWERBI_INTERACTIVE_GUIDE.md`.
 
-### Streamlit Command Center (`dashboard/app.py`)
-- 6 interactive operational pages providing real-time data inspection, parameter sensitivity tuning, and model drift analysis.
+### Web Live Crypto Telemetry Terminal (`web/crypto_market.html`)
+- High-frequency live surveillance terminal streaming multi-token orderbooks, real-time volume anomaly metrics, and continuous spread volatility telemetry.
 
 ---
 
@@ -426,8 +426,8 @@ Ai-Fraud-Detection-System/
 │   ├── 01_bronze_ingestion.py           # Bronze raw streaming ingestion
 │   ├── 02_silver_cleaning.py            # Silver deduplication & validation
 │   └── 03_gold_feature_engineering.py   # Gold 10-minute feature extraction
-├── dashboard/                           # Streamlit Surveillance Application
-│   └── app.py                           # 6-page interactive investigation station
+├── api/                                 # Vercel Serverless Edge API functions
+│   └── feed.js                          # Edge pipeline streaming generator
 ├── powerbi/                             # Power BI Star-Schema & DAX Guides
 │   ├── POWERBI_INTERACTIVE_GUIDE.md     # Step-by-step reporting guide
 │   ├── DAX_MEASURES.dax                 # Certified regulatory compliance formulas
@@ -455,7 +455,7 @@ python START_EVERYTHING.py
 This automatically initiates:
 1. Real-Time AI Scoring Engine (`realtime_scoring_engine.py`).
 2. Web Surveillance Platform on `http://localhost:3000`.
-3. Streamlit Metrics Dashboard on `http://localhost:8501`.
+3. Live Crypto Market Telemetry on `http://localhost:3000/crypto_market.html`.
 4. Opens browser to the live console.
 
 ### 🌐 2. Web Surveillance Console Only

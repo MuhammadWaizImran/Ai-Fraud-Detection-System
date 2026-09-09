@@ -200,7 +200,7 @@ SWITCH(
 **Add new page** → Rename → `Crypto Market`
 
 > [!NOTE]
-> Since Power BI cannot do real-time crypto API calls like Streamlit, this page focuses on which crypto symbols are most targeted by fraud.
+> Since Power BI cannot do real-time crypto WebSocket calls like the Web Crypto Terminal, this page focuses on which crypto symbols are most targeted by fraud.
 
 #### Top KPIs (4 Cards):
 | Card | Value |

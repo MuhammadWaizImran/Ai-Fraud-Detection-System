@@ -21,8 +21,6 @@ warnings.filterwarnings("ignore")
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 MODELS_DIR = os.path.join(BASE_DIR, "models")
-FEED_FILE  = os.path.join(BASE_DIR, "dashboard", "live_feed.jsonl")
-STATS_FILE = os.path.join(BASE_DIR, "dashboard", "live_stats.json")
 WEB_FEED_FILE  = os.path.join(BASE_DIR, "web", "data", "live_feed.jsonl")
 WEB_STATS_FILE = os.path.join(BASE_DIR, "web", "data", "live_stats.json")
 os.makedirs(os.path.join(BASE_DIR, "web", "data"), exist_ok=True)
@@ -285,8 +283,6 @@ def update_stats(verdict: str):
         stats["safe"] = GOLD_BASE_SAFE + stats["session_safe"]
     stats["fraud_rate_pct"] = round(stats["fraud"] / max(stats["total"], 1) * 100, 2)
     stats["last_updated"] = datetime.now(timezone.utc).isoformat()
-    with open(STATS_FILE, "w") as f:
-        json.dump(stats, f)
     with open(WEB_STATS_FILE, "w") as f:
         json.dump(stats, f)
 
@@ -409,13 +405,11 @@ feed_lock = threading.Lock()
 def write_to_feed(scored: dict):
     with feed_lock:
         lines = []
-        if os.path.exists(FEED_FILE):
-            with open(FEED_FILE, "r", encoding="utf-8") as f:
+        if os.path.exists(WEB_FEED_FILE):
+            with open(WEB_FEED_FILE, "r", encoding="utf-8") as f:
                 lines = f.readlines()
         lines.append(json.dumps(scored) + "\n")
         lines = lines[-500:]  # keep last 500 events
-        with open(FEED_FILE, "w", encoding="utf-8") as f:
-            f.writelines(lines)
         with open(WEB_FEED_FILE, "w", encoding="utf-8") as f:
             f.writelines(lines)
 
@@ -424,18 +418,12 @@ def write_to_feed(scored: dict):
 # ══════════════════════════════════════════════════════════════
 def main():
     print("\n[2] Initializing live feed files...")
-    os.makedirs(os.path.dirname(FEED_FILE), exist_ok=True)
     os.makedirs(os.path.dirname(WEB_FEED_FILE), exist_ok=True)
     # Clear old feed
-    with open(FEED_FILE, "w") as f:
-        f.write("")
-    with open(STATS_FILE, "w") as f:
-        json.dump(stats, f)
     with open(WEB_FEED_FILE, "w") as f:
         f.write("")
     with open(WEB_STATS_FILE, "w") as f:
         json.dump(stats, f)
-    print(f"  Feed file: {FEED_FILE}")
     print(f"  Web feed file: {WEB_FEED_FILE}")
 
     print("\n[3] Attempting Event Hubs connection...")

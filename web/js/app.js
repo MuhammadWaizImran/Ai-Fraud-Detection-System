@@ -743,7 +743,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // 6. Streamlit-Style Multi-Dimensional Filtering Logic
+  // 6. Multi-Dimensional Regulatory Audit Filtering Logic
   function applyTableFilters() {
     const searchTerm = (feedSearchInput?.value || '').toLowerCase().trim();
     const selectedVerdict = feedVerdictFilter?.value || 'ALL';

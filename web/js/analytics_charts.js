@@ -1,6 +1,6 @@
 /**
  * analytics_charts.js
- * Renders Streamlit-grade SHAP Global Feature Importance and Hourly Attack Density profiles using Chart.js.
+ * Renders Institutional-grade SHAP Global Feature Importance and Hourly Attack Density profiles using Chart.js.
  */
 
 const AnalyticsCharts = (() => {

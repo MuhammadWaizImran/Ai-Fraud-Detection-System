@@ -279,7 +279,7 @@ MLflow acts as the **Enterprise MLOps Control Plane**:
 ---
 
 ### Q10: What happens when a high-risk fraud ($\ge 0.85$) is detected?
-> **Answer:** "The Real-Time Scoring Engine immediately flags the trade in the live Streamlit dashboard, broadcasts a red surveillance banner, and triggers an **Azure Logic App Webhook** to dispatch an automated high-priority email alert to the compliance officer."
+> **Answer:** "The Real-Time Scoring Engine immediately flags the trade in the live 3D Web Surveillance Dashboard, broadcasts an emergency red radar pulse, and triggers an **Azure Logic App Webhook** to dispatch an automated high-priority email alert to the compliance officer."
 
 ---
 
@@ -304,4 +304,4 @@ MLflow acts as the **Enterprise MLOps Control Plane**:
 ---
 
 ### Q15: How can a compliance officer investigate a flagged transaction?
-> **Answer:** "The compliance officer opens the **Streamlit Command Center / Power BI Dashboard**, views the trader's risk profile, checks SHAP feature contributions explaining *why* the AI flagged it (e.g. Volume Spike = 25x, Cancel Ratio = 90%), and decides whether to freeze the account."
+> **Answer:** "The compliance officer opens the **3D Web Surveillance Console / Power BI Dashboard**, views the trader's risk profile, checks SHAP feature contributions explaining *why* the AI flagged it (e.g. Volume Spike = 25x, Cancel Ratio = 90%), and decides whether to freeze the account."
