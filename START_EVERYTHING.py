@@ -11,19 +11,25 @@ Runs all components in parallel:
 
 import os, sys, time, subprocess, threading, webbrowser
 
+if hasattr(sys.stdout, "reconfigure"):
+    try:
+        sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+    except Exception:
+        pass
+
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 BANNER = """
-╔══════════════════════════════════════════════════════════════╗
-║         FINRA AI FRAUD DETECTION PLATFORM v3.0               ║
-║         End-to-End Real-Time Live Launch                      ║
-╠══════════════════════════════════════════════════════════════╣
-║  Architecture:                                                ║
-║  CoinGecko → Event Hubs → AI Engine → Dashboard              ║
-║                                                               ║
-║  Models: XGBoost (60%) + IsoForest (20%) + Autoencoder (20%) ║
-║  Latency: < 2ms per order                                     ║
-╚══════════════════════════════════════════════════════════════╝
+================================================================
+         FINRA AI FRAUD DETECTION PLATFORM v3.0                 
+         End-to-End Real-Time Live Launch                       
+================================================================
+  Architecture:                                                 
+  CoinGecko -> Event Hubs -> AI Engine -> Dashboard             
+                                                                
+  Models: XGBoost (60%) + IsoForest (20%) + Autoencoder (20%)   
+  Latency: < 2ms per order                                      
+================================================================
 """
 print(BANNER)
 
@@ -51,8 +57,12 @@ def stream_output(name, proc, prefix_color=""):
 
 def open_browser(delay=6):
     time.sleep(delay)
-    print("\n  Opening dashboard in browser...")
-    webbrowser.open("http://localhost:8501")
+    print("\n  Opening applications in browser...")
+    try:
+        webbrowser.open("http://localhost:3000")
+        webbrowser.open("http://localhost:8501")
+    except Exception:
+        pass
 
 print("=" * 65)
 print("[STEP 1] Starting Real-Time AI Scoring Engine...")
@@ -78,25 +88,29 @@ print("  Waiting for models to load (3 seconds)...")
 time.sleep(3)
 
 print("\n" + "=" * 65)
-print("[STEP 2] Starting Live Order Simulator...")
+print("[STEP 2] Checking Live Order Simulator...")
 print("=" * 65)
-sim_proc = subprocess.Popen(
-    [sys.executable, "live_order_simulator.py"],
-    cwd=BASE_DIR,
-    stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
-    text=True, encoding="utf-8", errors="replace"
-)
-processes.append(("Order Simulator", sim_proc))
+sim_file = os.path.join(BASE_DIR, "live_order_simulator.py")
+if os.path.exists(sim_file):
+    sim_proc = subprocess.Popen(
+        [sys.executable, "live_order_simulator.py"],
+        cwd=BASE_DIR,
+        stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
+        text=True, encoding="utf-8", errors="replace"
+    )
+    processes.append(("Order Simulator", sim_proc))
 
-def stream_sim():
-    for line in sim_proc.stdout:
-        line = line.rstrip()
-        if line:
-            print(f"  [SIMULATOR] {line}")
-threading.Thread(target=stream_sim, daemon=True).start()
+    def stream_sim():
+        for line in sim_proc.stdout:
+            line = line.rstrip()
+            if line:
+                print(f"  [SIMULATOR] {line}")
+    threading.Thread(target=stream_sim, daemon=True).start()
+else:
+    print("  [OK] Real-time order generation is active inside AI Scoring Engine.")
 
 print("\n" + "=" * 65)
-print("[STEP 3] Starting Streamlit Dashboard...")
+print("[STEP 3] Starting Streamlit Dashboard (Port 8501)...")
 print("=" * 65)
 
 # Kill any existing streamlit
@@ -121,21 +135,41 @@ def stream_dash():
             print(f"  [DASHBOARD] {line}")
 threading.Thread(target=stream_dash, daemon=True).start()
 
+print("\n" + "=" * 65)
+print("[STEP 4] Starting 3D Web Application & Landing Page (Port 3000)...")
+print("=" * 65)
+web_proc = subprocess.Popen(
+    [sys.executable, "-m", "http.server", "3000", "--directory", "web"],
+    cwd=BASE_DIR,
+    stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
+    text=True, encoding="utf-8", errors="replace"
+)
+processes.append(("Web Server", web_proc))
+
+def stream_web():
+    for line in web_proc.stdout:
+        line = line.rstrip()
+        if line:
+            print(f"  [WEB] {line}")
+threading.Thread(target=stream_web, daemon=True).start()
+
 # Auto-open browser
 threading.Thread(target=open_browser, args=(7,), daemon=True).start()
 
 print("""
-╔══════════════════════════════════════════════════════════════╗
-║                  ALL SYSTEMS LIVE!                           ║
-╠══════════════════════════════════════════════════════════════╣
-║                                                               ║
-║  DASHBOARD:  http://localhost:8501                            ║
-║                                                               ║
-║  Real-time feed refreshes every 2 seconds                     ║
-║  Navigate to "Live Feed" page for real-time terminal          ║
-║                                                               ║
-║  Press Ctrl+C to stop all processes                           ║
-╚══════════════════════════════════════════════════════════════╝
+================================================================
+                   ALL SYSTEMS LIVE!                            
+================================================================
+                                                                
+  1. HOMEPAGE:          http://localhost:3000                   
+  2. 3D LIVE CONSOLE:   http://localhost:3000/dashboard.html    
+  3. STREAMLIT METRICS: http://localhost:8501                   
+                                                                
+  Real-time AI Scoring: XGBoost + IsoForest + Autoencoder       
+  Live feed syncing to dashboard and web data folders           
+                                                                
+  Press Ctrl+C to stop all processes                            
+================================================================
 """)
 
 try:

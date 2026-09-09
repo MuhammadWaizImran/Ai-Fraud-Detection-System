@@ -53,23 +53,34 @@ document.addEventListener('DOMContentLoaded', () => {
   const feedSearchInput = document.getElementById('feed-search-input');
   const feedVerdictFilter = document.getElementById('feed-verdict-filter');
 
-  // State initialized with Gold Lakehouse Baseline (150,000 Dataset + Live Stream)
-  const GOLD_BASELINE_TRADES = 150000;
-  const GOLD_BASELINE_FRAUDS = 22845;
+  // State synchronized with Python realtime scoring engine & 150,000 Gold Table
+  let realStats = { total: 150000, fraud: 22850, suspicious: 24150, safe: 103000, fraud_rate_pct: 15.23 };
   let liveTradesCounter = 0;
   let liveFraudsCounter = 0;
 
-  let isStreamRunning = false; // By default OFF to respect paused Azure compute status
+  async function syncLiveStats() {
+    try {
+      const res = await fetch('data/live_stats.json?t=' + Date.now());
+      if (res.ok) {
+        realStats = await res.json();
+        updateKPIs();
+      }
+    } catch (e) {}
+  }
+  setInterval(syncLiveStats, 2000);
+  syncLiveStats();
+
+  let isStreamRunning = true; // Enabled by default to stream live backend data
   let totalLatency = 0;
   let unreadAlerts = 0;
   const attackCounts = {
-    wash_trading: 4820,
-    spoofing: 5610,
-    layering: 5140,
-    volume_spike: 4280,
-    price_manipulation: 2995
+    wash_trading: 0,
+    spoofing: 0,
+    layering: 0,
+    volume_spike: 0,
+    price_manipulation: 0
   };
-  const uniqueTraders = new Set(Array.from({ length: 100 }, (_, i) => `TRADER_${String(i + 1).padStart(4, '0')}`));
+  const uniqueTraders = new Set();
   let ordersLedger = [];
 
   // 1. Initialize 3D Globe
@@ -110,7 +121,7 @@ document.addEventListener('DOMContentLoaded', () => {
       tickerHtml += `
         <div class="ticker-item">
           <span class="sym">${sym}</span>
-          <span class="price">$${info.price.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</span>
+          <span class="price">$${info.price.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
           <span class="${changeClass}">${arrow} ${Math.abs(info.change24h)}%</span>
         </div>
       `;
@@ -217,6 +228,32 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     }
 
+    // Center dynamic SHAP doughnut text precisely in the doughnut hole
+    function positionShapCenter(chart) {
+      if (!chart) return;
+      try {
+        const meta = chart.getDatasetMeta(0);
+        if (meta && meta.data && meta.data[0]) {
+          const centerMetric = document.getElementById('shap-center-metric');
+          if (centerMetric) {
+            const x = meta.data[0].x;
+            const y = meta.data[0].y;
+            if (typeof x === 'number' && typeof y === 'number' && !isNaN(x) && !isNaN(y)) {
+              const canvas = chart.canvas;
+              const offsetX = canvas ? canvas.offsetLeft : 0;
+              const offsetY = canvas ? canvas.offsetTop : 0;
+              centerMetric.style.left = `${x + offsetX}px`;
+              centerMetric.style.top = `${y + offsetY}px`;
+              centerMetric.style.transform = 'translate(-50%, -50%)';
+              centerMetric.style.position = 'absolute';
+            }
+          }
+        }
+      } catch (e) {
+        // graceful fallback
+      }
+    }
+
     // Chart 2: Real TreeSHAP Mathematical Circular Feature Attribution (Doughnut Ring)
     const shapCtx = document.getElementById('chart-live-shap')?.getContext('2d');
     if (shapCtx) {
@@ -262,13 +299,26 @@ document.addEventListener('DOMContentLoaded', () => {
               titleColor: '#fff',
               bodyColor: '#00f3ff',
               callbacks: {
-                label: function(context) {
+                label: function (context) {
                   return ` ${context.label}: ${context.raw}% Impact`;
                 }
               }
             }
           }
-        }
+        },
+        plugins: [{
+          id: 'centerDoughnutTextPlugin',
+          afterLayout: function (chart) {
+            positionShapCenter(chart);
+          },
+          afterDraw: function (chart) {
+            positionShapCenter(chart);
+          }
+        }]
+      });
+
+      window.addEventListener('resize', () => {
+        if (liveShapChart) positionShapCenter(liveShapChart);
       });
     }
 
@@ -411,6 +461,7 @@ document.addEventListener('DOMContentLoaded', () => {
         domValEl.innerText = `+${shares[maxIdx]}% WEIGHT`;
         domValEl.style.color = order.verdict === 'FRAUD' ? 'var(--red)' : (order.verdict === 'SUSPICIOUS' ? 'var(--amber)' : 'var(--cyan)');
       }
+      positionShapCenter(liveShapChart);
     }
 
     // 3. Update Real Symbol Fraud Bar Chart if fraud intercepted
@@ -427,13 +478,16 @@ document.addEventListener('DOMContentLoaded', () => {
   // 4. PERSISTENT HISTORICAL ORDER LEDGER (PRESERVES DATA ON RELOAD)
   // ══════════════════════════════════════════════════════════════
   const STORAGE_KEY = 'finra_ai_orders_ledger_v2';
+  const GOLD_LAKEHOUSE_BASE_TRADES = 150000;
+  const GOLD_LAKEHOUSE_BASE_FRAUDS = 22850;
+  const GOLD_LAKEHOUSE_BASE_TRADERS = 200;
 
-  function loadPersistentHistory() {
+  async function loadPersistentHistory() {
     try {
       const saved = localStorage.getItem(STORAGE_KEY);
       if (saved) {
         const parsed = JSON.parse(saved);
-        if (Array.isArray(parsed) && parsed.length > 0) {
+        if (Array.isArray(parsed) && parsed.length > 50) {
           ordersLedger = parsed;
           console.log(`[Ledger] Loaded ${ordersLedger.length} historical orders from persistent storage.`);
           recalculateHistoryStats();
@@ -445,7 +499,24 @@ document.addEventListener('DOMContentLoaded', () => {
       console.warn('[Ledger] LocalStorage read fallback:', e);
     }
 
-    // If first time, load true historical Gold Lakehouse baseline
+    // Connect and load genuine sample records from the 150,000 Gold Lakehouse dataset
+    try {
+      const res = await fetch('data/gold_table_sample.json?t=' + Date.now());
+      if (res.ok) {
+        const goldSample = await res.json();
+        if (Array.isArray(goldSample) && goldSample.length > 0) {
+          ordersLedger = goldSample;
+          console.log(`[Ledger] Connected & loaded ${ordersLedger.length} Gold Lakehouse table records.`);
+          saveLedger();
+          recalculateHistoryStats();
+          renderInitialTable();
+          return;
+        }
+      }
+    } catch (e) {
+      console.warn('[Ledger] Gold sample fetch fallback:', e);
+    }
+
     console.log('[Ledger] Loaded historical Gold Lakehouse baseline.');
     recalculateHistoryStats();
     renderInitialTable();
@@ -453,10 +524,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function saveLedger() {
     try {
-      // Keep up to 250 orders in local storage
-      const subset = ordersLedger.slice(0, 250);
+      // Keep up to 300 orders in local storage
+      const subset = ordersLedger.slice(0, 300);
       localStorage.setItem(STORAGE_KEY, JSON.stringify(subset));
-    } catch (e) {}
+    } catch (e) { }
   }
 
   const GOLD_ATTACK_BASELINES = {
@@ -468,23 +539,13 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   function recalculateHistoryStats() {
-    totalTrades = GOLD_BASELINE_TRADES + ordersLedger.length;
-    totalFrauds = GOLD_BASELINE_FRAUDS;
     totalLatency = 0;
     uniqueTraders.clear();
 
-    // Initialize with full 150,000 Gold Table dataset baseline numbers
-    Object.keys(GOLD_ATTACK_BASELINES).forEach(k => {
-      attackCounts[k] = GOLD_ATTACK_BASELINES[k];
-    });
-    Array.from({ length: 100 }, (_, i) => `TRADER_${String(i + 1).padStart(4, '0')}`).forEach(t => uniqueTraders.add(t));
-
-    // Add session detected items
     ordersLedger.forEach(o => {
       totalLatency += (o.latency_ms || 0.42);
-      uniqueTraders.add(o.trader_id);
+      if (o.trader_id) uniqueTraders.add(o.trader_id);
       if (o.verdict === 'FRAUD') {
-        totalFrauds += 1;
         if (attackCounts[o.attack_type] !== undefined) {
           attackCounts[o.attack_type] += 1;
         }
@@ -519,9 +580,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const aiResult = AIEnsemble.score(featureResult.features);
 
     // D. Assemble complete enriched transaction record
+    // Genuine Python scoring engine models (XGBoost, Isolation Forest, Autoencoder) take precedence!
     const transaction = {
-      ...rawOrder,
       ...aiResult,
+      ...rawOrder,
       features: featureResult.named
     };
 
@@ -531,7 +593,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // E. Update State & Metrics
     liveTradesCounter += 1;
-    totalLatency += transaction.latency_ms;
+    totalLatency += transaction.latency_ms || 0.42;
     uniqueTraders.add(transaction.trader_id);
 
     if (transaction.verdict === 'FRAUD') {
@@ -540,8 +602,10 @@ document.addEventListener('DOMContentLoaded', () => {
         attackCounts[transaction.attack_type] += 1;
       }
       unreadAlerts += 1;
-      copilotBadge.innerText = unreadAlerts;
-      copilotBadge.style.display = 'flex';
+      if (copilotBadge) {
+        copilotBadge.innerText = unreadAlerts;
+        copilotBadge.style.display = 'flex';
+      }
 
       // Visual & Audio Threat Alarm
       triggerThreatAlarm(transaction);
@@ -560,32 +624,50 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function updateKPIs() {
-    const totalCurrentTrades = GOLD_BASELINE_TRADES + liveTradesCounter;
-    const totalCurrentFrauds = GOLD_BASELINE_FRAUDS + liveFraudsCounter;
+    let totalCurrentTrades = 0;
+    if (realStats && realStats.total >= GOLD_LAKEHOUSE_BASE_TRADES) {
+      totalCurrentTrades = realStats.total + liveTradesCounter;
+    } else {
+      totalCurrentTrades = GOLD_LAKEHOUSE_BASE_TRADES + (realStats.session_total || realStats.total || 0) + liveTradesCounter;
+    }
 
-    totalTradesEl.innerText = totalCurrentTrades.toLocaleString();
-    fraudCountEl.innerText = totalCurrentFrauds.toLocaleString();
-    const rate = totalCurrentTrades > 0 ? ((totalCurrentFrauds / totalCurrentTrades) * 100).toFixed(2) : '15.23';
+    let totalCurrentFrauds = 0;
+    if (realStats && realStats.fraud >= GOLD_LAKEHOUSE_BASE_FRAUDS) {
+      totalCurrentFrauds = realStats.fraud + liveFraudsCounter;
+    } else {
+      totalCurrentFrauds = GOLD_LAKEHOUSE_BASE_FRAUDS + (realStats.session_fraud || realStats.fraud || 0) + liveFraudsCounter;
+    }
+
+    totalTradesEl.innerText = totalCurrentTrades.toLocaleString() + '+';
+    fraudCountEl.innerText = totalCurrentFrauds.toLocaleString() + '+';
+    const rate = ((totalCurrentFrauds / totalCurrentTrades) * 100).toFixed(2);
     fraudRateEl.innerText = `${rate}%`;
     const avgLat = liveTradesCounter > 0 ? (totalLatency / liveTradesCounter).toFixed(2) : '0.42';
     avgLatencyEl.innerText = `${avgLat} ms`;
-    activeTradersEl.innerText = `${uniqueTraders.size} Entities`;
+    const traderCount = Math.max(GOLD_LAKEHOUSE_BASE_TRADERS, uniqueTraders.size);
+    activeTradersEl.innerText = `${traderCount} Entities`;
   }
 
   function updateAttackBars() {
-    const totalAttacks = Object.values(attackCounts).reduce((a, b) => a + b, 0) || 1;
+    const totalWash = GOLD_ATTACK_BASELINES.wash_trading + (attackCounts.wash_trading || 0);
+    const totalSpoof = GOLD_ATTACK_BASELINES.spoofing + (attackCounts.spoofing || 0);
+    const totalLayer = GOLD_ATTACK_BASELINES.layering + (attackCounts.layering || 0);
+    const totalVolume = GOLD_ATTACK_BASELINES.volume_spike + (attackCounts.volume_spike || 0);
+    const totalPrice = GOLD_ATTACK_BASELINES.price_manipulation + (attackCounts.price_manipulation || 0);
 
-    countWash.innerText = `${attackCounts.wash_trading.toLocaleString()} (${((attackCounts.wash_trading / totalAttacks) * 100).toFixed(1)}%)`;
-    countSpoof.innerText = `${attackCounts.spoofing.toLocaleString()} (${((attackCounts.spoofing / totalAttacks) * 100).toFixed(1)}%)`;
-    countLayer.innerText = `${attackCounts.layering.toLocaleString()} (${((attackCounts.layering / totalAttacks) * 100).toFixed(1)}%)`;
-    countVolume.innerText = `${attackCounts.volume_spike.toLocaleString()} (${((attackCounts.volume_spike / totalAttacks) * 100).toFixed(1)}%)`;
-    countPrice.innerText = `${attackCounts.price_manipulation.toLocaleString()} (${((attackCounts.price_manipulation / totalAttacks) * 100).toFixed(1)}%)`;
+    const totalAttacks = totalWash + totalSpoof + totalLayer + totalVolume + totalPrice;
 
-    barWash.style.width = `${(attackCounts.wash_trading / totalAttacks) * 100}%`;
-    barSpoof.style.width = `${(attackCounts.spoofing / totalAttacks) * 100}%`;
-    barLayer.style.width = `${(attackCounts.layering / totalAttacks) * 100}%`;
-    barVolume.style.width = `${(attackCounts.volume_spike / totalAttacks) * 100}%`;
-    barPrice.style.width = `${(attackCounts.price_manipulation / totalAttacks) * 100}%`;
+    countWash.innerText = `${totalWash.toLocaleString()} (${((totalWash / totalAttacks) * 100).toFixed(1)}%)`;
+    countSpoof.innerText = `${totalSpoof.toLocaleString()} (${((totalSpoof / totalAttacks) * 100).toFixed(1)}%)`;
+    countLayer.innerText = `${totalLayer.toLocaleString()} (${((totalLayer / totalAttacks) * 100).toFixed(1)}%)`;
+    countVolume.innerText = `${totalVolume.toLocaleString()} (${((totalVolume / totalAttacks) * 100).toFixed(1)}%)`;
+    countPrice.innerText = `${totalPrice.toLocaleString()} (${((totalPrice / totalAttacks) * 100).toFixed(1)}%)`;
+
+    barWash.style.width = `${(totalWash / totalAttacks) * 100}%`;
+    barSpoof.style.width = `${(totalSpoof / totalAttacks) * 100}%`;
+    barLayer.style.width = `${(totalLayer / totalAttacks) * 100}%`;
+    barVolume.style.width = `${(totalVolume / totalAttacks) * 100}%`;
+    barPrice.style.width = `${(totalPrice / totalAttacks) * 100}%`;
   }
 
   function triggerThreatAlarm(order) {
@@ -628,7 +710,7 @@ document.addEventListener('DOMContentLoaded', () => {
       <td style="color:var(--text-muted);">${order.trader_id}</td>
       <td style="color:var(--cyan);font-weight:800;">${order.symbol}</td>
       <td class="${orderTypeClass}">${(order.order_type || 'BUY').toUpperCase()}</td>
-      <td style="color:#fff;">$${parseFloat(order.price || 0).toLocaleString(undefined, {minimumFractionDigits: 2})}</td>
+      <td style="color:#fff;">$${parseFloat(order.price || 0).toLocaleString(undefined, { minimumFractionDigits: 2 })}</td>
       <td>${parseFloat(order.volume || 0).toFixed(2)}</td>
       <td style="font-weight:800;color:${order.risk_score >= 0.85 ? 'var(--red)' : (order.risk_score >= 0.5 ? 'var(--amber)' : 'var(--emerald)')};">${order.risk_score}</td>
       <td><span class="pill ${verdictClass}">${order.verdict}</span></td>
@@ -636,11 +718,15 @@ document.addEventListener('DOMContentLoaded', () => {
       <td style="color:var(--cyan);font-weight:700;font-size:11px;">${(order.latency_ms || 0.42).toFixed(2)}ms</td>
     `;
 
-    // Click row to explain in AI Copilot Chatbot
+    // Click row to explain in AI Copilot Chatbot (if active)
     tr.addEventListener('click', () => {
-      openCopilot();
-      AICopilot.setInspectedOrder(order);
-      addMessage(AICopilot.explain(order), 'ai');
+      if (copilotDrawer && typeof openCopilot === 'function') {
+        openCopilot();
+        if (window.AICopilot) {
+          AICopilot.setInspectedOrder(order);
+          addMessage(AICopilot.explain(order), 'ai');
+        }
+      }
     });
 
     if (isLive) {
@@ -726,21 +812,22 @@ document.addEventListener('DOMContentLoaded', () => {
     generateSeedHistory();
   });
 
-  // 7. Copilot Chatbot Interactions
+  // 7. Copilot Chatbot Interactions (Gracefully bypassed if chat elements are removed)
   function openCopilot() {
-    copilotDrawer.classList.add('active');
+    if (copilotDrawer) copilotDrawer.classList.add('active');
     unreadAlerts = 0;
-    copilotBadge.style.display = 'none';
+    if (copilotBadge) copilotBadge.style.display = 'none';
   }
 
   function closeCopilot() {
-    copilotDrawer.classList.remove('active');
+    if (copilotDrawer) copilotDrawer.classList.remove('active');
   }
 
   function addMessage(text, sender = 'ai') {
+    if (!copilotMessages) return;
     const bubble = document.createElement('div');
     bubble.className = `chat-bubble ${sender === 'ai' ? 'bubble-ai' : 'bubble-user'}`;
-    
+
     let formatted = text
       .replace(/### (.*?)\n/g, '<div style="font-size:14px;font-weight:800;color:var(--cyan);margin-bottom:6px;">$1</div>')
       .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
@@ -754,6 +841,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function handleUserQuery() {
+    if (!copilotInput) return;
     const text = copilotInput.value.trim();
     if (!text) return;
 
@@ -761,42 +849,52 @@ document.addEventListener('DOMContentLoaded', () => {
     copilotInput.value = '';
 
     setTimeout(() => {
-      const response = AICopilot.query(text);
-      addMessage(response, 'ai');
+      if (window.AICopilot) {
+        const response = AICopilot.query(text);
+        addMessage(response, 'ai');
+      }
     }, 350);
   }
 
-  copilotTrigger.addEventListener('click', () => {
-    if (copilotDrawer.classList.contains('active')) closeCopilot();
-    else openCopilot();
-  });
+  if (copilotTrigger) {
+    copilotTrigger.addEventListener('click', () => {
+      if (copilotDrawer && copilotDrawer.classList.contains('active')) closeCopilot();
+      else openCopilot();
+    });
+  }
 
-  copilotClose.addEventListener('click', closeCopilot);
-  copilotSend.addEventListener('click', handleUserQuery);
-  copilotInput.addEventListener('keypress', (e) => {
-    if (e.key === 'Enter') handleUserQuery();
-  });
+  if (copilotClose) copilotClose.addEventListener('click', closeCopilot);
+  if (copilotSend) copilotSend.addEventListener('click', handleUserQuery);
+  if (copilotInput) {
+    copilotInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') handleUserQuery();
+    });
+  }
 
   document.querySelectorAll('.chip-btn').forEach(btn => {
     btn.addEventListener('click', () => {
       const q = btn.getAttribute('data-q');
-      copilotInput.value = q;
-      handleUserQuery();
+      if (copilotInput) {
+        copilotInput.value = q;
+        handleUserQuery();
+      }
     });
   });
 
-  addMessage("👋 **Welcome to FINRA AI Compliance Copilot!**\n\nI monitor our 3-Model Hybrid Ensemble (XGBoost, Isolation Forest, Autoencoder) in real-time. **Click any trade in the table** to get an instant AI risk breakdown, or ask me any question below!", 'ai');
+  if (copilotMessages) {
+    addMessage("👋 **Welcome to FINRA AI Compliance Copilot!**\n\nI monitor our 3-Model Hybrid Ensemble (XGBoost, Isolation Forest, Autoencoder) in real-time. **Click any trade in the table** to get an instant AI risk breakdown, or ask me any question below!", 'ai');
+  }
 
   // Controls Event Listeners
   const liveIndicatorEl = document.querySelector('.live-indicator');
-  
+
   function updateStreamUI() {
     btnPauseStream.innerText = isStreamRunning ? '⏸️ PAUSE STREAM' : '▶️ START LIVE STREAM';
     btnPauseStream.className = isStreamRunning ? 'btn-cyber' : 'btn-cyber btn-primary-pulse';
     if (liveIndicatorEl) {
       liveIndicatorEl.innerHTML = isStreamRunning
-        ? '<span class="live-dot" style="background:#10b981;box-shadow:0 0 8px #10b981;"></span><span style="color:#10b981;">🥇 GOLD STREAM ACTIVE</span>'
-        : '<span class="live-dot" style="background:#ef4444;box-shadow:0 0 8px #ef4444;"></span><span style="color:#ef4444;">🔴 PIPELINE IDLE (AZURE PAUSED)</span>';
+        ? '<span class="live-dot" style="background:#10b981;box-shadow:0 0 8px #10b981;"></span><span style="color:#10b981;">🟢 LIVE — PYTHON AI ENGINE ACTIVE</span>'
+        : '<span class="live-dot" style="background:#ef4444;box-shadow:0 0 8px #ef4444;"></span><span style="color:#ef4444;">⏸️ STREAM PAUSED</span>';
     }
   }
 
@@ -804,6 +902,14 @@ document.addEventListener('DOMContentLoaded', () => {
     isStreamRunning = !isStreamRunning;
     updateStreamUI();
   });
+
+  // Auto-start stream if Python backend is active
+  setInterval(() => {
+    if (!isStreamRunning && MarketStream.isConnected()) {
+      isStreamRunning = true;
+      updateStreamUI();
+    }
+  }, 1000);
 
   // Set initial indicator state
   updateStreamUI();

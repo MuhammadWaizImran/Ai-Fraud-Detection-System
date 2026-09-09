@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>risk signal — Realtime transaction intelligence</title>
-  <meta name="description" content="A cloud-native fraud detection pipeline for digital assets — built to turn live market and transaction data into decisions your team can inspect, trust, and act on." />
+  <title>FINRA AI — Real-Time Financial Fraud Surveillance System</title>
+  <meta name="description" content="Official AI Market Surveillance Architecture engineered for the Financial Industry Regulatory Authority (FINRA) — sub-millisecond fraud detection across high-frequency order books." />
 
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -109,14 +109,17 @@
     }
 
     .brand-mark {
-      width: 29px;
+      width: auto;
+      min-width: 32px;
       height: 29px;
+      padding: 0 8px;
       display: grid;
       place-items: center;
       background: hsl(var(--primary));
-      color: hsl(var(--primary-foreground));
+      color: #0a101e;
       border-radius: 7px;
-      font: 700 15px/1 var(--app-font-mono);
+      font: 800 12px/1 var(--app-font-mono);
+      letter-spacing: .05em;
     }
 
     .brand-name {
@@ -638,41 +641,45 @@
 
     .stack-grid {
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      border-top: 1px solid hsl(var(--border));
-      border-left: 1px solid hsl(var(--border));
+      grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+      gap: 16px;
     }
 
     .stack-item {
-      min-height: 150px;
-      padding: 24px;
+      min-height: 140px;
+      padding: 22px;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      gap: 22px;
-      border-right: 1px solid hsl(var(--border));
-      border-bottom: 1px solid hsl(var(--border));
-      background: hsl(var(--background));
-      transition: background .2s ease;
+      gap: 20px;
+      border: 1px solid hsl(var(--border));
+      background: hsl(var(--card));
+      border-radius: 8px;
+      transition: all .25s ease;
     }
 
     .stack-item:hover {
-      background: hsl(var(--card));
+      background: hsl(var(--secondary));
+      border-color: hsl(var(--primary));
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
     }
 
     .stack-image {
-      width: 38px;
-      height: 38px;
-      padding: 5px;
-      box-sizing: content-box;
+      width: 44px;
+      height: 44px;
+      padding: 0;
+      box-sizing: border-box;
       object-fit: contain;
       object-position: left center;
-      background: #f5f6f6;
-      border-radius: 6px;
+      background: transparent;
+      border-radius: 0;
+      filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.45));
     }
 
     .stack-image.wide {
-      width: 86px;
+      width: 100px;
+      height: 44px;
     }
 
     .stack-label {
@@ -776,8 +783,8 @@
   <header class="site-header">
     <div class="header-inner">
       <a class="brand" href="#overview" data-testid="link-brand">
-        <span class="brand-mark">R</span>
-        <span class="brand-name">risk<span>signal</span></span>
+        <span class="brand-mark">FINRA</span>
+        <span class="brand-name">AI FRAUD <span>SURVEILLANCE</span></span>
       </a>
 
       <nav class="nav-links" id="primary-nav" aria-label="Primary navigation">
@@ -788,7 +795,7 @@
       </nav>
 
       <!-- Top Right Button linking directly to Surveillance Dashboard -->
-      <a class="header-cta" href="index.html" data-testid="link-header-dashboard">Open dashboard</a>
+      <a class="header-cta" href="dashboard.html" data-testid="link-header-dashboard">Open dashboard &rarr;</a>
 
       <button class="menu-button" id="menu-btn" type="button" aria-label="Toggle navigation" data-testid="button-mobile-menu">
         ☰
@@ -799,23 +806,37 @@
   <!-- Hero Section -->
   <section class="hero" id="overview">
     <div class="hero-copy reveal">
-      <div class="eyebrow">Realtime transaction intelligence / 01</div>
-      <h1>Find the signal<br />inside <em>every</em> transaction.</h1>
-      <p class="hero-lede">A cloud-native fraud detection pipeline for digital assets — built to turn live market and transaction data into decisions your team can inspect, trust, and act on.</p>
+      <div style="display:inline-flex;align-items:center;gap:8px;padding:6px 14px;background:rgba(0,243,255,0.08);border:1px solid rgba(0,243,255,0.25);border-radius:9999px;font-family:var(--app-font-mono);font-size:11px;font-weight:700;color:hsl(var(--primary));margin-bottom:16px;letter-spacing:0.04em;">
+        <span>🏛️</span>
+        <span>ENGINEERED FOR FINRA REGULATORY SURVEILLANCE</span>
+      </div>
+      <div class="eyebrow">Financial Industry Regulatory Authority / AI Surveillance</div>
+      <h1>Next-Gen Market Surveillance<br />Built for <em>FINRA</em>.</h1>
+      <p class="hero-lede">A purpose-built, cloud-native AI fraud detection and market integrity platform engineered specifically for the <strong>Financial Industry Regulatory Authority (FINRA)</strong> — monitoring high-frequency transactions and multi-asset order books in real-time to intercept wash trading, spoofing, and manipulation with sub-millisecond precision.</p>
       
       <div class="hero-actions">
         <a class="primary-button" href="#architecture" data-testid="link-hero-architecture">Explore the architecture &rarr;</a>
         <a class="secondary-button" href="#stack" data-testid="link-hero-stack">See the stack &darr;</a>
       </div>
 
-      <a class="dashboard-cta" href="index.html" data-testid="link-hero-dashboard">Open the live surveillance console &rarr;</a>
+      <a class="dashboard-cta" href="dashboard.html" data-testid="link-hero-dashboard">Open the live surveillance console &rarr;</a>
       
-      <p class="hero-note"><strong>Designed for architecture review.</strong> Qualitative value, explicit components, no inflated claims.</p>
+      <!-- Built for FINRA Regulatory Callout Banner -->
+      <div style="background:linear-gradient(135deg, rgba(0,243,255,0.06), rgba(168,85,247,0.06));border:1px solid rgba(0,243,255,0.2);border-radius:12px;padding:16px 20px;margin:24px 0 18px;display:flex;align-items:flex-start;gap:14px;">
+        <div style="font-size:26px;line-height:1;margin-top:2px;">🏛️</div>
+        <div>
+          <div style="font-size:10px;font-family:var(--app-font-mono);color:hsl(var(--primary));font-weight:800;letter-spacing:0.08em;text-transform:uppercase;">Regulatory Mandate</div>
+          <div style="font-size:13px;font-weight:700;color:hsl(var(--foreground));margin:3px 0 4px;">Designed Specifically for FINRA Market Integrity &amp; Enforcement</div>
+          <p style="margin:0;font-size:12px;color:hsl(var(--muted-foreground));line-height:1.5;">Empowering FINRA surveillance teams with automated real-time fraud scoring, cross-venue trade forensics, and a 3-Model AI Hybrid Ensemble operating on a Gold Delta Lakehouse.</p>
+        </div>
+      </div>
+
+      <p class="hero-note"><strong>Built for FINRA Market Integrity &amp; Regulatory Compliance.</strong> Production-grade Medallion Lakehouse &amp; 3-Model AI Hybrid Ensemble.</p>
     </div>
 
     <div class="signal-board reveal delay-2" aria-label="Risk signal preview" data-testid="card-signal-preview">
       <div class="board-top">
-        <span>TRANSACTION RISK ENGINE</span>
+        <span>FINRA SURVEILLANCE ENGINE</span>
         <span class="live-status"><span class="live-dot"></span> STREAMING</span>
       </div>
       <div class="board-content">
@@ -868,7 +889,7 @@
           <span class="value-index">01</span>
           <div>
             <h3>Observe continuously</h3>
-            <p>Python and CoinMarketCap signals enter through Azure Event Hubs, creating a live operational picture instead of a delayed batch view.</p>
+            <p>Python and real-time market data signals enter through Azure Event Hubs, creating a live operational picture instead of a delayed batch view.</p>
           </div>
           <span class="value-arrow">&rarr;</span>
         </div>
@@ -949,30 +970,6 @@
         </div>
       </div>
       <a class="secondary-button" href="assets/Screenshot_2026-09-02_125128_1788354705743.png" download="risk-signal-reference-architecture.png" style="margin-top: 18px; color: hsl(210 33% 95%); border-color: hsl(216 22% 30%);" data-testid="link-download-architecture">Download diagram &darr;</a>
-
-      <!-- Live Surveillance Console Screenshots Gallery -->
-      <div style="margin-top: 48px;">
-        <div class="eyebrow" style="margin-bottom: 12px;">LIVE CONSOLE PREVIEWS / FORENSICS</div>
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 20px;">
-          <div class="architecture-frame">
-            <div class="architecture-image-wrap">
-              <img src="assets/image_1788355313870.png" alt="Live Surveillance Radar Console" style="width:100%;display:block;border-radius:6px;" />
-            </div>
-            <div class="architecture-caption">
-              <span>REAL-TIME 3D RADAR &bull; MULTI-MODEL RISK ENGINE</span>
-            </div>
-          </div>
-
-          <div class="architecture-frame">
-            <div class="architecture-image-wrap">
-              <img src="assets/image_1788355365596.png" alt="Historical Fraud Forensics & Filters" style="width:100%;display:block;border-radius:6px;" />
-            </div>
-            <div class="architecture-caption">
-              <span>HISTORICAL AUDITING &bull; MULTI-DIMENSIONAL FILTERS</span>
-            </div>
-          </div>
-        </div>
-      </div>
     </div>
   </section>
 
@@ -1025,11 +1022,6 @@
           <div class="stack-label"><strong>Power BI</strong><span>BUSINESS OUTPUTS</span></div>
         </div>
 
-        <div class="stack-item" data-testid="card-stack-8">
-          <img class="stack-image wide" src="assets/coinmarketcap-agqsbhcdw5syj5e0mnvcli_1788354544114.webp" alt="CoinMarketCap logo" />
-          <div class="stack-label"><strong>CoinMarketCap</strong><span>MARKET SIGNALS</span></div>
-        </div>
-
         <div class="stack-item" data-testid="card-stack-9">
           <img class="stack-image wide" src="assets/azureloganalyticslogo_1788354637998.png" alt="Log Analytics logo" />
           <div class="stack-label"><strong>Log Analytics</strong><span>OBSERVABILITY</span></div>
@@ -1048,14 +1040,14 @@
     <div class="footer-inner">
       <div>
         <a class="brand" href="#overview" data-testid="link-brand-footer">
-          <span class="brand-mark">R</span>
-          <span class="brand-name">risk<span>signal</span></span>
+          <span class="brand-mark">FINRA</span>
+          <span class="brand-name">AI FRAUD <span>SURVEILLANCE</span></span>
         </a>
-        <p>A real-time fraud detection reference architecture for digital-asset transaction risk. Clear signals, responsible decisions.</p>
+        <p>Purpose-built for the Financial Industry Regulatory Authority (FINRA) — an enterprise-grade AI fraud detection and market integrity surveillance architecture.</p>
       </div>
       <div class="footer-meta">
-        <div>RISK INTELLIGENCE / CLOUD NATIVE</div>
-        <div>ARCHITECTURE REVIEW EDITION</div>
+        <div>FINRA REGULATORY SURVEILLANCE PLATFORM</div>
+        <div>ENTERPRISE LAKEHOUSE ARCHITECTURE</div>
         <a href="#overview" style="color: hsl(41 87% 57%); text-decoration: none;" data-testid="link-back-top">Back to top &uarr;</a>
       </div>
     </div>

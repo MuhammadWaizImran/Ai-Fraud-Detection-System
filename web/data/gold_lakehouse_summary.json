@@ -1,0 +1,15 @@
+{
+  "total_gold_records": 150000,
+  "total_frauds": 22850,
+  "total_suspicious": 24150,
+  "total_safe": 103000,
+  "total_traders": 500,
+  "fraud_rate_pct": 15.23,
+  "fraud_distribution": {
+    "volume_spike": 5840,
+    "wash_trading": 4960,
+    "layering": 3520,
+    "spoofing": 2480,
+    "price_manipulation": 960
+  }
+}

@@ -5,15 +5,15 @@
   "rewrites": [
     {
       "source": "/",
-      "destination": "/web/landing.html"
+      "destination": "/web/index.html"
     },
     {
       "source": "/landing",
-      "destination": "/web/landing.html"
+      "destination": "/web/index.html"
     },
     {
       "source": "/dashboard",
-      "destination": "/web/index.html"
+      "destination": "/web/dashboard.html"
     },
     {
       "source": "/assets/(.*)",

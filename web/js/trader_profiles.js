@@ -119,26 +119,28 @@ const TraderProfiles = (() => {
     const trader = TRADERS_DATA.find(t => t.id === traderId);
     if (!trader) return;
 
-    // Open Copilot Chatbot
+    // Open Copilot Chatbot if present
     const trigger = document.getElementById('copilot-trigger');
     const drawer = document.getElementById('copilot-drawer');
-    if (drawer && !drawer.classList.contains('active')) {
+    if (trigger && drawer && !drawer.classList.contains('active')) {
       trigger.click();
     }
 
     const messages = document.getElementById('copilot-messages');
-    const bubble = document.createElement('div');
-    bubble.className = 'chat-bubble bubble-ai';
-    bubble.innerHTML = `
-      <div style="font-size:14px;font-weight:800;color:var(--cyan);margin-bottom:6px;">👤 Regulatory Trader Audit: \`${trader.id}\`</div>
-      * **Entity Risk Tier:** <strong>[${trader.tier}]</strong> | **Score:** \`${trader.riskScore}\`<br/>
-      * **Historical Violations:** <strong>${trader.violations} Fraud Interceptions</strong><br/>
-      * **Primary Modality:** \`${trader.primaryAttack}\`<br/>
-      * **Traded Session Volume:** \`$${parseFloat(trader.totalVolume).toLocaleString()}K\`<br/><br/>
-      ${trader.tier === 'FLAGGED' ? '🚨 **Compliance Warning:** High concentration of wash trading and order book spoofing. Entity is automatically flagged in Gold Delta Lakehouse for compliance audit.' : '🟢 **Status:** Normal institutional liquidity provider profile with compliant microstructural flow.'}
-    `;
-    messages.appendChild(bubble);
-    messages.scrollTop = messages.scrollHeight;
+    if (messages) {
+      const bubble = document.createElement('div');
+      bubble.className = 'chat-bubble bubble-ai';
+      bubble.innerHTML = `
+        <div style="font-size:14px;font-weight:800;color:var(--cyan);margin-bottom:6px;">👤 Regulatory Trader Audit: \`${trader.id}\`</div>
+        * **Entity Risk Tier:** <strong>[${trader.tier}]</strong> | **Score:** \`${trader.riskScore}\`<br/>
+        * **Historical Violations:** <strong>${trader.violations} Fraud Interceptions</strong><br/>
+        * **Primary Modality:** \`${trader.primaryAttack}\`<br/>
+        * **Traded Session Volume:** \`$${parseFloat(trader.totalVolume).toLocaleString()}K\`<br/><br/>
+        ${trader.tier === 'FLAGGED' ? '🚨 **Compliance Warning:** High concentration of wash trading and order book spoofing. Entity is automatically flagged in Gold Delta Lakehouse for compliance audit.' : '🟢 **Status:** Normal institutional liquidity provider profile with compliant microstructural flow.'}
+      `;
+      messages.appendChild(bubble);
+      messages.scrollTop = messages.scrollHeight;
+    }
   }
 
   function init() {

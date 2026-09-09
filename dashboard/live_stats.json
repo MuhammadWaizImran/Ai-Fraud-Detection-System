@@ -1,1 +1,1 @@
-{"total": 14607, "fraud": 3493, "suspicious": 9366, "safe": 1748, "alerts_fired": 3493, "started_at": "2026-09-02T08:27:55.875646+00:00", "fraud_rate_pct": 23.91, "last_updated": "2026-09-02T10:42:21.343436+00:00"}
+{"gold_base": 150000, "session_total": 5028, "total": 155028, "session_fraud": 1471, "fraud": 24321, "session_suspicious": 2981, "suspicious": 27131, "session_safe": 576, "safe": 103576, "active_traders": 200, "alerts_fired": 1470, "fraud_rate_pct": 15.69, "started_at": "2026-09-09T08:26:33.424699+00:00", "last_updated": "2026-09-09T08:48:02.099368+00:00"}

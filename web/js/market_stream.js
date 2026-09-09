@@ -62,11 +62,11 @@ const MarketStream = (() => {
       if (res.ok) {
         const text = await res.text();
         const lines = text.trim().split('\n').filter(l => l.length > 0);
-        
+
         if (lines.length > 0) {
           isBackendLive = true;
           const newEvents = [];
-          
+
           lines.forEach(line => {
             try {
               const event = JSON.parse(line);
@@ -74,7 +74,7 @@ const MarketStream = (() => {
                 processedEventIds.add(event.order_id);
                 newEvents.push(event);
               }
-            } catch (e) {}
+            } catch (e) { }
           });
 
           if (newEvents.length > 0) {
@@ -105,6 +105,10 @@ const MarketStream = (() => {
 
       if (currentPrices[cleanSymbol]) {
         currentPrices[cleanSymbol].price = priceVal;
+        if (raw.price_change_24h_pct !== undefined && raw.price_change_24h_pct !== null) {
+          const chg = parseFloat(raw.price_change_24h_pct);
+          currentPrices[cleanSymbol].change24h = (chg >= 0 ? '+' : '') + chg.toFixed(2);
+        }
       }
 
       return {

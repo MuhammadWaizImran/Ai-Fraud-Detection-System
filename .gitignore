@@ -25,7 +25,7 @@ wheels/
 .installed.cfg
 *.egg
 
-# Cloud Configuration & Credentials
+# Cloud Configuration & Credentials (STRICT PRIVACY)
 azure_config.json
 .env
 .env.*
@@ -35,8 +35,11 @@ terraform/terraform.tfstate*
 terraform/.terraform/
 *.tfstate
 *.tfstate.*
-fraud-detection-website-source/
 
+# Dependencies & Build Artifacts
+node_modules/
+slide_images/
+fraud-detection-website-source/
 
 # IDE & OS Files
 .DS_Store
@@ -46,12 +49,9 @@ Thumbs.db
 *.swp
 *.swo
 
-# Logs and databases
+# Logs and temporary media
 *.log
 .tempmediaStorage/
 .user_uploaded/
 .system_generated/
-terraform/.terraform/
-*.tfstate
-*.tfstate.*
 
