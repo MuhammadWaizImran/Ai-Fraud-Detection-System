@@ -1,0 +1,12 @@
+.git
+terraform/
+notebooks/
+powerbi/
+training_data.csv
+*.joblib
+models/*.joblib
+models/*.pt
+*.py
+*.pptx
+*.log
+__pycache__/

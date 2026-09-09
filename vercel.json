@@ -1,10 +1,13 @@
 {
   "version": 2,
-  "public": true,
-  "cleanUrls": true,
+  "cleanUrls": false,
   "rewrites": [
     {
       "source": "/",
+      "destination": "/web/index.html"
+    },
+    {
+      "source": "/index.html",
       "destination": "/web/index.html"
     },
     {
@@ -16,8 +19,28 @@
       "destination": "/web/dashboard.html"
     },
     {
-      "source": "/assets/(.*)",
-      "destination": "/web/assets/$1"
+      "source": "/dashboard.html",
+      "destination": "/web/dashboard.html"
+    },
+    {
+      "source": "/console",
+      "destination": "/web/console.html"
+    },
+    {
+      "source": "/console.html",
+      "destination": "/web/console.html"
+    },
+    {
+      "source": "/crypto_market",
+      "destination": "/web/crypto_market.html"
+    },
+    {
+      "source": "/crypto_market.html",
+      "destination": "/web/crypto_market.html"
+    },
+    {
+      "source": "/api/(.*)",
+      "destination": "/api/$1"
     },
     {
       "source": "/css/(.*)",
@@ -32,8 +55,8 @@
       "destination": "/web/data/$1"
     },
     {
-      "source": "/api/(.*)",
-      "destination": "/api/$1"
+      "source": "/assets/(.*)",
+      "destination": "/web/assets/$1"
     },
     {
       "source": "/(.*)",
